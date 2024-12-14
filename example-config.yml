@@ -1,0 +1,9 @@
+loglevel: Debug
+WriteDirectory: test_output
+raids:
+  osps-baseline:
+    tactics: 
+      - tlp_red
+      # - tlp_amber
+      # - tlp_green
+      # - tlp_clear
