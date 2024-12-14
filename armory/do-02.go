@@ -9,7 +9,7 @@ func BR_02() (strikeName string, result raidengine.StrikeResult) {
 	strikeName = "BR_02"
 	result = raidengine.StrikeResult{
 		Passed:      false,
-		Description: "All releases and released software assets MUST be assigned a unique version identifier for each release intended to be used by users.",
+		Description: "The project documentation MUST include an explanation of the contribution process.",
 		ControlID:   "OSPS-BR-02",
 		Movements:   make(map[string]raidengine.MovementResult),
 	}

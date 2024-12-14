@@ -5,21 +5,21 @@ import (
 	"github.com/privateerproj/privateer-sdk/utils"
 )
 
-func BR_02() (strikeName string, result raidengine.StrikeResult) {
-	strikeName = "BR_02"
+func BR_08() (strikeName string, result raidengine.StrikeResult) {
+	strikeName = "BR_08"
 	result = raidengine.StrikeResult{
 		Passed:      false,
-		Description: "All releases and released software assets MUST be assigned a unique version identifier for each release intended to be used by users.",
-		ControlID:   "OSPS-BR-02",
+		Description: "The project’s version control system MUST restrict collaborator permissions to the lowest available privileges by default.",
+		ControlID:   "OSPS-BR-08",
 		Movements:   make(map[string]raidengine.MovementResult),
 	}
 
-	result.ExecuteMovement(BR_02_T01)
+	result.ExecuteMovement(BR_08_T01)
 
 	return
 }
 
-func BR_02_T01() (moveResult raidengine.MovementResult) {
+func BR_08_T01() (moveResult raidengine.MovementResult) {
 	moveResult = raidengine.MovementResult{
 		Description: "This movement is still under construction",
 		Function:    utils.CallerPath(0),
