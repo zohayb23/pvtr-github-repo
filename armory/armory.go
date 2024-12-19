@@ -1,13 +1,15 @@
 package armory
 
 import (
+	"github.com/hashicorp/go-hclog"
 	"github.com/privateerproj/privateer-sdk/config"
 	"github.com/privateerproj/privateer-sdk/raidengine"
 )
 
 var (
-	Config *config.Config
-	Armory = raidengine.Armory{
+	GlobalConfig *config.Config
+	Logger       hclog.Logger
+	Armory       = raidengine.Armory{
 		Tactics: map[string][]raidengine.Strike{
 			"dev": {
 				DO_01,
@@ -61,3 +63,20 @@ var (
 		},
 	}
 )
+
+func SetupArmory(c *config.Config) {
+	GlobalConfig = c
+	Logger = c.Logger
+	if c.GetString("token") == "" {
+		Armory.Tactics = unauthenticatedTactics()
+	}
+}
+
+func unauthenticatedTactics() map[string][]raidengine.Strike {
+	return map[string][]raidengine.Strike{
+		"dev":        {},
+		"maturity_1": {},
+		"maturity_2": {},
+		"maturity_3": {},
+	}
+}

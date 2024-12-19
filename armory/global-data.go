@@ -2,12 +2,12 @@ package armory
 
 import (
 	"context"
-	"log"
 
-	"github.com/privateerproj/privateer-sdk/config"
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
 )
+
+var Authenticated bool
 
 type RepoData struct {
 	// Need to update token for this
@@ -26,15 +26,15 @@ type RepoData struct {
 		HasDiscussionsEnabled   bool
 		HasIssuesEnabled        bool
 		IsSecurityPolicyEnabled bool
-		DefaultBranchRef		struct{
-			Name				string
-			RefUpdateRule		struct{
-				AllowsDeletions					bool
-				AllowsForcePushes				bool
-				RequiredApprovingReviewCount	bool
+		DefaultBranchRef        struct {
+			Name          string
+			RefUpdateRule struct {
+				AllowsDeletions              bool
+				AllowsForcePushes            bool
+				RequiredApprovingReviewCount bool
 			}
 		}
-		Releases                struct {
+		Releases struct {
 			TotalCount int
 		}
 		// BranchProtectionRule	struct{
@@ -65,32 +65,27 @@ type RepoData struct {
 
 var GlobalData RepoData
 
-func GetData(c *config.Config) RepoData {
+func GetData() RepoData {
 	if GlobalData.Repository.Name != "" {
 		return GlobalData
 	}
-
-	owner := c.GetString("owner")
-	repo := c.GetString("repo")
+	owner := GlobalConfig.GetString("owner")
+	repo := GlobalConfig.GetString("repo")
 	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: c.GetString("token")},
+		&oauth2.Token{AccessToken: GlobalConfig.GetString("token")},
 	)
 	httpClient := oauth2.NewClient(context.Background(), src)
 
 	client := githubv4.NewClient(httpClient)
-	return makeQuery(client, owner, repo)
-}
 
-func makeQuery(client *githubv4.Client, owner, name string) RepoData {
 	variables := map[string]interface{}{
 		"owner": githubv4.String(owner),
-		"name":  githubv4.String(name),
+		"name":  githubv4.String(repo),
 	}
 
 	err := client.Query(context.Background(), &GlobalData, variables)
 	if err != nil {
-		log.Print(err)
+		Logger.Error("Error querying GitHub GraphQL API: ", err)
 	}
-
 	return GlobalData
 }
