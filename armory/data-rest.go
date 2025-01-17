@@ -29,9 +29,16 @@ type RepoData struct {
 }
 
 type ReleaseData struct {
-	Id      int    `json:"id"`
-	Name    string `json:"name"`
-	TagName string `json:"tag_name"`
+	Id      int            `json:"id"`
+	Name    string         `json:"name"`
+	TagName string         `json:"tag_name"`
+	URL     string         `json:"url"`
+	Assets  []ReleaseAsset `json:"assets"`
+}
+
+type ReleaseAsset struct {
+	Name        string `json:"name"`
+	DownloadURL string `json:"browser_download_url"`
 }
 
 type DirContents struct {
@@ -206,11 +213,9 @@ func (r *RestData) getWorkflowPermissions() (WorkflowPermissions, error) {
 }
 
 func (r *RestData) GetFileContentByURL(downloadURL string) (string, error) {
-	// Call the same low-level function used by the rest of your data-rest flows
-	responseData, err := makeApiCall(downloadURL, true)
+	responseData, err := makeApiCall(downloadURL, false)
 	if err != nil {
 		return "", err
 	}
-	// Convert the raw bytes to a string and return
 	return string(responseData), nil
 }

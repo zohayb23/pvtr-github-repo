@@ -14,10 +14,9 @@ func countReleases() pluginkit.TestResult {
 		Description: "Counting the number of releases on the repository",
 		Function:    utils.CallerPath(1),
 		Passed:      true,
-		Value:       releases,
+		Value:       len(releases),
 		Message:     fmt.Sprintf("Releases found: %v", len(releases)),
 	}
 
-	// TODO: Use this section to write a single step or test that contributes to BR_01
 	return testResult
 }

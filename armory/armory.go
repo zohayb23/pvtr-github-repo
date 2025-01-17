@@ -35,6 +35,7 @@ var (
 				QA_01,
 				AC_03,
 				AC_05,
+				LE_04,
 			},
 			"maturity_1": {
 				AC_01,
@@ -98,6 +99,7 @@ func unauthenticatedTestSuites() map[string][]pluginkit.TestSet {
 			QA_01,
 			BR_02,
 			BR_06,
+			LE_04,
 		},
 		"maturity_1": {},
 		"maturity_2": {},
