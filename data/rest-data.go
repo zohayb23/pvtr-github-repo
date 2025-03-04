@@ -12,19 +12,16 @@ import (
 )
 
 type RestData struct {
-	owner    string
-	repo     string
-	Metadata RepoMetadata
-	Workflow Workflow
-	Insights si.SecurityInsights
-	Config   *config.Config
-}
-
-type RepoMetadata struct {
-	Name     string `json:"name"`
-	Private  bool   `json:"private"`
-	Releases []ReleaseData
-	Contents struct {
+	owner      string
+	repo       string
+	Config     *config.Config
+	Workflow   Workflow
+	Insights   si.SecurityInsights
+	Name       string `json:"name"`
+	Private    bool   `json:"private"`
+	WebsiteURL string `json:"websiteUrl"`
+	Releases   []ReleaseData
+	Contents   struct {
 		TopLevel []DirContents
 		ForgeDir []DirContents
 	}
@@ -74,6 +71,7 @@ func (r *RestData) Setup() error {
 	r.getMetadata()
 	r.loadSecurityInsights()
 	r.getWorkflow()
+	r.getReleases()
 	return nil
 }
 
@@ -109,11 +107,11 @@ func (r *RestData) getSourceFile(owner, repo, path string) (response FileAPIResp
 
 func (r *RestData) loadSecurityInsights() {
 	r.getTopDirContents()
-	if len(r.Metadata.Contents.TopLevel) == 0 {
+	if len(r.Contents.TopLevel) == 0 {
 		r.Config.Logger.Error("no contents retrieved from the top level of the repository")
 		return
 	}
-	for _, content := range r.Metadata.Contents.TopLevel {
+	for _, content := range r.Contents.TopLevel {
 		if r.foundSecurityInsights(content) {
 			insights, err := si.Read(r.owner, r.repo, "security-insights.yml")
 			r.Insights = insights
@@ -124,7 +122,7 @@ func (r *RestData) loadSecurityInsights() {
 		}
 	}
 	r.getForgeDirContents()
-	for _, content := range r.Metadata.Contents.ForgeDir {
+	for _, content := range r.Contents.ForgeDir {
 		if r.foundSecurityInsights(content) {
 			insights, err := si.Read(r.owner, r.repo, ".github/security-insights.yml")
 			r.Insights = insights
@@ -157,7 +155,7 @@ func (r *RestData) getTopDirContents() {
 		r.Config.Logger.Error(fmt.Sprintf("error getting top level contents: %s", err.Error()))
 		return
 	}
-	json.Unmarshal(responseData, &r.Metadata.Contents.TopLevel)
+	json.Unmarshal(responseData, &r.Contents.TopLevel)
 }
 
 func (r *RestData) getForgeDirContents() {
@@ -167,7 +165,7 @@ func (r *RestData) getForgeDirContents() {
 		r.Config.Logger.Error(fmt.Sprintf("error getting forge contents: %s", err.Error()))
 		return
 	}
-	json.Unmarshal(responseData, &r.Metadata.Contents.ForgeDir)
+	json.Unmarshal(responseData, &r.Contents.ForgeDir)
 }
 
 func (r *RestData) getMetadata() error {
@@ -176,17 +174,17 @@ func (r *RestData) getMetadata() error {
 	if err != nil {
 		return err
 	}
-	return json.Unmarshal(responseData, &r.Metadata)
+	return json.Unmarshal(responseData, &r)
 }
 
-// func (r *RepoMetadata) getReleases(owner, repo string) error {
-// 	endpoint := fmt.Sprintf("%s/%s/%s/releases", APIBase, owner, repo)
-// 	responseData, err := r.makeApiCall(endpoint)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return json.Unmarshal(responseData, &r.Releases)
-// }
+func (r *RestData) getReleases() error {
+	endpoint := fmt.Sprintf("%s/%s/%s/releases", APIBase, r.owner, r.repo)
+	responseData, err := r.makeApiCall(endpoint)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(responseData, &r.Releases)
+}
 
 func (r *RestData) getWorkflow() error {
 	endpoint := fmt.Sprintf("%s/%s/%s/actions/permissions/workflow", APIBase, r.owner, r.repo)

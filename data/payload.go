@@ -14,7 +14,6 @@ type Payload struct {
 	GraphqlData
 	*RestData // Pointer in case more data is added during tests
 	Insights  si.SecurityInsights
-	Metadata  RepoMetadata
 	Config    *config.Config
 }
 

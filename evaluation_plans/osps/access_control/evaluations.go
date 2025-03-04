@@ -2,8 +2,6 @@ package access_control
 
 import (
 	"github.com/revanite-io/sci/pkg/layer4"
-
-	"github.com/revanite-io/pvtr-github-repo/evaluation_plans/reusable_steps"
 )
 
 //
@@ -106,16 +104,17 @@ func OSPS_AC_04() (evaluation *layer4.ControlEvaluation) {
 		},
 	)
 
-	evaluation.AddAssessment(
-		"OSPS-AC-04.02",
-		"When a job is assigned permissions in a CI/CD pipeline, the source code or configuration MUST only assign the minimum privileges necessary for the corresponding activity.",
-		[]string{
-			"Maturity Level 3",
-		},
-		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
-		},
-	)
+	// TODO: Implement this assessment
+	// evaluation.AddAssessment(
+	// 	"OSPS-AC-04.02",
+	// 	"When a job is assigned permissions in a CI/CD pipeline, the source code or configuration MUST only assign the minimum privileges necessary for the corresponding activity.",
+	// 	[]string{
+	// 		"Maturity Level 3",
+	// 	},
+	// 	[]layer4.AssessmentStep{
+	// 		reusable_steps.NotImplemented,
+	// 	},
+	// )
 
 	return
 }

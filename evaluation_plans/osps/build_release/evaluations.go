@@ -57,20 +57,22 @@ func OSPS_BR_02() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
+			passIfNoRelases,
+			releaseHasUniqueIdentifier,
 		},
 	)
 
-	evaluation.AddAssessment(
-		"OSPS-BR-02.01",
-		"When an official release is created, all assets within that release MUST be clearly associated with the release identifier or another unique identifier for the asset.",
-		[]string{
-			"Maturity Level 3",
-		},
-		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
-		},
-	)
+	// TODO: Implement this assessment
+	// evaluation.AddAssessment(
+	// 	"OSPS-BR-02.02",
+	// 	"When an official release is created, all assets within that release MUST be clearly associated with the release identifier or another unique identifier for the asset.",
+	// 	[]string{
+	// 		"Maturity Level 3",
+	// 	},
+	// 	[]layer4.AssessmentStep{
+	// 		reusable_steps.NotImplemented,
+	// 	},
+	// )
 
 	return
 }
@@ -90,22 +92,24 @@ func OSPS_BR_03() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
+			ensureGitHubWebsiteLinkUsesHTTPS,
+			ensureInsightsLinksUseHTTPS,
 		},
 	)
 
-	evaluation.AddAssessment(
-		"OSPS-BR-03.02",
-		"When the project lists a URI as an official distribution channel, that URI MUST be exclusively delivered using encrypted channels.",
-		[]string{
-			"Maturity Level 1",
-			"Maturity Level 2",
-			"Maturity Level 3",
-		},
-		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
-		},
-	)
+	// TODO: Implement this assessment
+	// evaluation.AddAssessment(
+	// 	"OSPS-BR-03.02",
+	// 	"When the project lists a URI as an official distribution channel, that URI MUST be exclusively delivered using encrypted channels.",
+	// 	[]string{
+	// 		"Maturity Level 1",
+	// 		"Maturity Level 2",
+	// 		"Maturity Level 3",
+	// 	},
+	// 	[]layer4.AssessmentStep{
+	// 		reusable_steps.NotImplemented,
+	// 	},
+	// )
 
 	return
 }
