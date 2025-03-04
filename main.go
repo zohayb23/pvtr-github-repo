@@ -5,10 +5,11 @@ import (
 
 	"os"
 
-	"github.com/eddie-knight/pvtr-github-repo/armory"
+	"github.com/revanite-io/pvtr-github-repo/evaluations"
+	"github.com/revanite-io/pvtr-github-repo/evaluations/data"
 
 	"github.com/privateerproj/privateer-sdk/command"
-	"github.com/privateerproj/privateer-sdk/config"
+	"github.com/privateerproj/privateer-sdk/pluginkit"
 )
 
 var (
@@ -21,34 +22,32 @@ var (
 	// BuiltAt is the actual build datetime
 	BuiltAt = ""
 
-	PluginName   = "github-repo"
+	PluginName   = "example-plugin"
 	RequiredVars = []string{
 		"owner",
 		"repo",
 		"token",
 	}
-
-	runCmd = command.NewPluginCommands(
-		PluginName,
-		Version,
-		VersionPostfix,
-		GitCommitHash,
-		&armory.Armory,
-		initializer,
-		RequiredVars,
-	)
 )
-
-// initializer is a custom function to set up the armory for our usecase
-func initializer(c *config.Config) (err error) {
-	armory.SetupArmory(c)
-	return
-}
 
 func main() {
 	if VersionPostfix != "" {
 		Version = fmt.Sprintf("%s-%s", Version, VersionPostfix)
 	}
+
+	// NewVessel may take a payload for all suites to reference
+	pvtrVessel := pluginkit.NewVessel(PluginName, data.Loader, RequiredVars)
+
+	// Evaluation Suite may optionally take a payload to selectively override the data specified in NewVessel
+	pvtrVessel.AddEvaluationSuite("OSPS_B", data.Loader, evaluations.OSPS_B)
+
+	runCmd := command.NewPluginCommands(
+		PluginName,
+		Version,
+		VersionPostfix,
+		GitCommitHash,
+		pvtrVessel,
+	)
 
 	err := runCmd.Execute()
 	if err != nil {

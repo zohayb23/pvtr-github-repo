@@ -1,0 +1,47 @@
+package evaluations
+
+import "github.com/revanite-io/sci/pkg/layer4"
+
+var (
+	OSPS_B = []*layer4.ControlEvaluation{
+		OSPS_AC_01(),
+		OSPS_AC_02(),
+		OSPS_AC_03(),
+		OSPS_AC_04(),
+		OSPS_BR_01(),
+		OSPS_BR_02(),
+		OSPS_BR_03(),
+		OSPS_BR_04(),
+		OSPS_BR_05(),
+		OSPS_BR_06(),
+		OSPS_DO_01(),
+		OSPS_DO_02(),
+		OSPS_DO_03(),
+		OSPS_DO_04(),
+		OSPS_DO_05(),
+		OSPS_DO_06(),
+		OSPS_GV_01(),
+		OSPS_GV_02(),
+		OSPS_GV_03(),
+		OSPS_GV_04(),
+		OSPS_LE_01(),
+		OSPS_LE_02(),
+		OSPS_LE_03(),
+		OSPS_QA_01(),
+		OSPS_QA_02(),
+		OSPS_QA_03(),
+		OSPS_QA_04(),
+		OSPS_QA_05(),
+		OSPS_QA_06(),
+		OSPS_QA_07(),
+		OSPS_SA_01(),
+		OSPS_SA_02(),
+		OSPS_SA_03(),
+		OSPS_VM_01(),
+		OSPS_VM_02(),
+		OSPS_VM_03(),
+		OSPS_VM_04(),
+		OSPS_VM_05(),
+		OSPS_VM_06(),
+	}
+)

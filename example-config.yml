@@ -1,14 +1,17 @@
 loglevel: Debug
-write-directory: output
+write-directory: test_output
+write: true
+output: yaml
 services:
-  my-project:
-    plugin: pvtr-github-repo
-    test-suites:
-      - dev
-      # - maturity_1
-      # - maturity_2
-      # - maturity_3
+  your-service:
+    plugin: example-plugin
+    policy:
+      catalogs: ["OSPS_B"]
+      applicability:
+        - Maturity1
+        - Maturity2
+        - Maturity3
     vars:
-      owner: ossf
-      repo: security-insights-spec
-      token: $GITHUB_TOKEN
+      your: a
+      required: x
+      variables: y

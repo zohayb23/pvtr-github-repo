@@ -1,19 +1,20 @@
-module github.com/eddie-knight/pvtr-github-repo
+module github.com/revanite-io/pvtr-github-repo // Replace this globally with your module name
 
-go 1.23
+go 1.23.4
 
 require (
-	github.com/hashicorp/go-hclog v1.6.3
 	github.com/ossf/si-tooling/v2 v2.0.4
-	github.com/privateerproj/privateer-sdk v0.7.0
+	github.com/privateerproj/privateer-sdk v1.0.0
+	github.com/revanite-io/sci v0.1.7
 	github.com/shurcooL/githubv4 v0.0.0-20240727222349-48295856cce7
-	golang.org/x/oauth2 v0.26.0
+	golang.org/x/oauth2 v0.18.0
 )
 
 require (
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/hashicorp/go-hclog v1.6.3 // indirect
 	github.com/hashicorp/go-plugin v1.6.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/yamux v0.1.1 // indirect
@@ -40,6 +41,7 @@ require (
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
+	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240314234333-6e1732d8331c // indirect
 	google.golang.org/grpc v1.62.1 // indirect
 	google.golang.org/protobuf v1.36.1 // indirect
@@ -47,5 +49,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-// Uncomment if you're working locally on a privateer SDK improvement
-// replace github.com/privateerproj/privateer-sdk => ../privateer-sdk
+// Uncomment if you're working on a dependency locally
+replace github.com/privateerproj/privateer-sdk => ../../privateerproj/privateer-sdk
+
+// replace github.com/revanite-io/sci => ../sci

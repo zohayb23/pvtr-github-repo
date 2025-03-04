@@ -1,6 +1,6 @@
 # ignore the generated artifacts
 osps-baseline
-output
+test_output
 pvtr-github-repo
 pvtr-osps-baseline
 
