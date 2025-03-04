@@ -80,20 +80,22 @@ func OSPS_DO_03() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
+			reusable_steps.HasMadeReleases,
+			hasSignatureVerificationGuide,
 		},
 	)
 
-	evaluation.AddAssessment(
-		"OSPS-DO-03.02",
-		"When the project has made a release, the project documentation MUST contain instructions to verify the expected identity of the person or process authoring the software release.",
-		[]string{
-			"Maturity Level 3",
-		},
-		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
-		},
-	)
+	// TODO: Implement this assessment
+	// evaluation.AddAssessment(
+	// 	"OSPS-DO-03.02",
+	// 	"When the project has made a release, the project documentation MUST contain instructions to verify the expected identity of the person or process authoring the software release.",
+	// 	[]string{
+	// 		"Maturity Level 3",
+	// 	},
+	// 	[]layer4.AssessmentStep{
+	// 		reusable_steps.NotImplemented,
+	// 	},
+	// )
 
 	return
 }
