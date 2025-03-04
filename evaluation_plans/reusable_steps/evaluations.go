@@ -17,7 +17,7 @@ func VerifyPayload(payloadData interface{}) (payload data.Payload, message strin
 }
 
 func NotImplemented(payloadData interface{}, changes map[string]*layer4.Change) (result layer4.Result, message string) {
-	return layer4.Unknown, "Not implemented"
+	return layer4.NeedsReview, "Not implemented"
 }
 
 func GithubBuiltIn(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
