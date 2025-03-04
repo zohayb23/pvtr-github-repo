@@ -5,8 +5,8 @@ import (
 
 	"os"
 
-	"github.com/revanite-io/pvtr-github-repo/evaluations"
-	"github.com/revanite-io/pvtr-github-repo/evaluations/data"
+	"github.com/revanite-io/pvtr-github-repo/data"
+	"github.com/revanite-io/pvtr-github-repo/evaluation_plans"
 
 	"github.com/privateerproj/privateer-sdk/command"
 	"github.com/privateerproj/privateer-sdk/pluginkit"
@@ -39,7 +39,7 @@ func main() {
 	pvtrVessel := pluginkit.NewVessel(PluginName, data.Loader, RequiredVars)
 
 	// Evaluation Suite may optionally take a payload to selectively override the data specified in NewVessel
-	pvtrVessel.AddEvaluationSuite("OSPS_B", data.Loader, evaluations.OSPS_B)
+	pvtrVessel.AddEvaluationSuite("OSPS_B", data.Loader, evaluation_plans.OSPS_B)
 
 	runCmd := command.NewPluginCommands(
 		PluginName,

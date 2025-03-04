@@ -1,0 +1,121 @@
+package access_control
+
+import (
+	"github.com/revanite-io/sci/pkg/layer4"
+
+	"github.com/revanite-io/pvtr-github-repo/evaluation_plans/reusable_steps"
+)
+
+//
+// Access Control Control Family
+
+func OSPS_AC_01() (evaluation *layer4.ControlEvaluation) {
+	evaluation = &layer4.ControlEvaluation{
+		Control_Id:        "OSPS-AC-01",
+		Remediation_Guide: "",
+	}
+
+	evaluation.AddAssessment(
+		"OSPS-AC-01.01",
+		"When a user attempts to access a sensitive resource in the project's version control system, the system MUST require the user to complete a multi-factor authentication process.",
+		[]string{
+			"Maturity Level 1",
+			"Maturity Level 2",
+			"Maturity Level 3",
+		},
+		[]layer4.AssessmentStep{
+			reusable_steps.StepExample,
+		},
+	)
+
+	return
+}
+
+func OSPS_AC_02() (evaluation *layer4.ControlEvaluation) {
+	evaluation = &layer4.ControlEvaluation{
+		Control_Id:        "OSPS-AC-02",
+		Remediation_Guide: "",
+	}
+
+	evaluation.AddAssessment(
+		"OSPS-AC-02.01",
+		"When a new collaborator is added, the version control system MUST require manual permission assignment, or restrict the collaborator permissions to the lowest available privileges by default.",
+		[]string{
+			"Maturity Level 1",
+			"Maturity Level 2",
+			"Maturity Level 3",
+		},
+		[]layer4.AssessmentStep{
+			reusable_steps.StepExample,
+		},
+	)
+
+	return
+}
+
+func OSPS_AC_03() (evaluation *layer4.ControlEvaluation) {
+	evaluation = &layer4.ControlEvaluation{
+		Control_Id:        "OSPS-AC-03",
+		Remediation_Guide: "",
+	}
+
+	evaluation.AddAssessment(
+		"OSPS-AC-03.01",
+		"When a direct commit is attempted on the project's primary branch, an enforcement mechanism MUST prevent the change from being applied.",
+		[]string{
+			"Maturity Level 1",
+			"Maturity Level 2",
+			"Maturity Level 3",
+		},
+		[]layer4.AssessmentStep{
+			reusable_steps.StepExample,
+		},
+	)
+
+	evaluation.AddAssessment(
+		"OSPS-AC-03.02",
+		"When an attempt is made to delete the project's primary branch, the version control system MUST treat this as a sensitive activity and require explicit confirmation of intent.",
+		[]string{
+			"Maturity Level 1",
+			"Maturity Level 2",
+			"Maturity Level 3",
+		},
+		[]layer4.AssessmentStep{
+			reusable_steps.StepExample,
+		},
+	)
+
+	return
+}
+
+func OSPS_AC_04() (evaluation *layer4.ControlEvaluation) {
+	evaluation = &layer4.ControlEvaluation{
+		Control_Id:        "OSPS-AC-04",
+		Remediation_Guide: "",
+	}
+
+	evaluation.AddAssessment(
+		"OSPS-AC-04.01",
+		"When a CI/CD task is executed with no permissions specified, the project's version control system MUST default to the lowest available permissions for all activities in the pipeline.",
+		[]string{
+			"Maturity Level 2",
+			"Maturity Level 3",
+		},
+		[]layer4.AssessmentStep{
+			reusable_steps.StepExample,
+		},
+	)
+
+	evaluation.AddAssessment(
+		"OSPS-AC-04.02",
+		"When a job is assigned permissions in a CI/CD pipeline, the source code or configuration MUST only assign the minimum privileges necessary for the corresponding activity.",
+		[]string{
+			"Maturity Level 3",
+		},
+		[]layer4.AssessmentStep{
+			reusable_steps.StepExample,
+		},
+	)
+
+	return
+}
