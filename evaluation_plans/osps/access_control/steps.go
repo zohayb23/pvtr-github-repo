@@ -85,3 +85,21 @@ func workflowPermissionsRestricted(payloadData interface{}, _ map[string]*layer4
 	}
 	return
 }
+
+func workflowDefaultReadPermissions(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	payload, message := reusable_steps.PayloadCheck(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	workflowPermissions := payload.Workflow.DefaultPermissions
+
+	message = "Workflow permissions default to " + workflowPermissions
+
+	if workflowPermissions == "read" {
+		result = layer4.Passed
+	} else {
+		result = layer4.Failed
+	}
+	return
+}

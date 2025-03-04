@@ -15,6 +15,7 @@ type RestData struct {
 	owner    string
 	repo     string
 	Metadata RepoMetadata
+	Workflow Workflow
 	Insights si.SecurityInsights
 	Config   *config.Config
 }
@@ -27,7 +28,6 @@ type RepoMetadata struct {
 		TopLevel []DirContents
 		ForgeDir []DirContents
 	}
-	// WorkflowPermissions WorkflowPermissions
 }
 
 type ReleaseData struct {
@@ -60,9 +60,9 @@ type FileAPIResponse struct {
 	SHA         string `json:"sha"`
 }
 
-type WorkflowPermissions struct {
-	DefaultWorkflowPermissions string `json:"default_workflow_permissions"`
-	CanApprovePullRequest      bool   `json:"can_approve_pull_request_reviews"`
+type Workflow struct {
+	DefaultPermissions    string `json:"default_workflow_permissions"`
+	CanApprovePullRequest bool   `json:"can_approve_pull_request_reviews"`
 }
 
 var APIBase = "https://api.github.com/repos"
@@ -73,6 +73,7 @@ func (r *RestData) Setup() error {
 
 	r.getMetadata()
 	r.loadSecurityInsights()
+	r.getWorkflow()
 	return nil
 }
 
@@ -187,24 +188,17 @@ func (r *RestData) getMetadata() error {
 // 	return json.Unmarshal(responseData, &r.Releases)
 // }
 
-// func (r *RestData) getWorkflowPermissions() (WorkflowPermissions, error) {
-// 	if r.Metadata.WorkflowPermissions != (WorkflowPermissions{}) {
-// 		return r.Metadata.WorkflowPermissions, nil
-// 	}
-
-// 	endpoint := fmt.Sprintf("%s/%s/%s/actions/permissions/workflow", APIBase, r.owner, r.repo)
-// 	responseData, err := r.makeApiCall(endpoint)
-// 	if err != nil {
-// 		return WorkflowPermissions{}, err
-// 	}
-
-// 	var permResp WorkflowPermissions
-// 	if err := json.Unmarshal(responseData, &permResp); err != nil {
-// 		return WorkflowPermissions{}, fmt.Errorf("failed to parse permissions: %v", err)
-// 	}
-
-// 	return permResp, nil
-// }
+func (r *RestData) getWorkflow() error {
+	endpoint := fmt.Sprintf("%s/%s/%s/actions/permissions/workflow", APIBase, r.owner, r.repo)
+	responseData, err := r.makeApiCall(endpoint)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(responseData, &r.Workflow); err != nil {
+		return fmt.Errorf("failed to parse permissions: %v", err)
+	}
+	return nil
+}
 
 func (r *RestData) getFileContentByURL(downloadURL string) (string, error) {
 	responseData, err := r.makeApiCall(downloadURL)

@@ -12,9 +12,10 @@ import (
 
 type Payload struct {
 	GraphqlData
-	Insights si.SecurityInsights
-	Metadata RepoMetadata
-	Config   *config.Config
+	*RestData // Pointer in case more data is added during tests
+	Insights  si.SecurityInsights
+	Metadata  RepoMetadata
+	Config    *config.Config
 }
 
 func Loader(config *config.Config) (payload interface{}, err error) {
@@ -28,8 +29,7 @@ func Loader(config *config.Config) (payload interface{}, err error) {
 	}
 	return interface{}(Payload{
 		GraphqlData: graphql,
-		Insights:    rest.Insights,
-		Metadata:    rest.Metadata,
+		RestData:    rest,
 		Config:      config,
 	}), nil
 }
