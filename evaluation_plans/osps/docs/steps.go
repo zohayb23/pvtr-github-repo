@@ -7,7 +7,7 @@ import (
 )
 
 func hasUserGuidees(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -20,7 +20,7 @@ func hasUserGuidees(payloadData interface{}, _ map[string]*layer4.Change) (resul
 }
 
 func hasDefectReportingGuide(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	// data, message := reusable_steps.PayloadCheck(payloadData)
+	// data, message := reusable_steps.VerifyPayload(payloadData)
 	// if message != "" {
 	// 	return layer4.Unknown, message
 	// }
@@ -33,7 +33,7 @@ func hasDefectReportingGuide(payloadData interface{}, _ map[string]*layer4.Chang
 }
 
 func hasIssuesEnabled(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -46,7 +46,7 @@ func hasIssuesEnabled(payloadData interface{}, _ map[string]*layer4.Change) (res
 }
 
 func hasDiscussionsEnabled(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -59,7 +59,7 @@ func hasDiscussionsEnabled(payloadData interface{}, _ map[string]*layer4.Change)
 }
 
 func acceptsVulnReports(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -72,7 +72,7 @@ func acceptsVulnReports(payloadData interface{}, _ map[string]*layer4.Change) (r
 }
 
 func hasSignatureVerificationGuide(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -82,4 +82,17 @@ func hasSignatureVerificationGuide(payloadData interface{}, _ map[string]*layer4
 	}
 
 	return layer4.Passed, "Signature verification guide was specified in Security Insights data"
+}
+
+func hasDependencyManagementPolicy(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if data.Insights.Repository.Documentation.DependencyManagement == "" {
+		return layer4.Failed, "Dependency management policy was NOT specified in Security Insights data"
+	}
+
+	return layer4.Passed, "Dependency management policy was specified in Security Insights data"
 }

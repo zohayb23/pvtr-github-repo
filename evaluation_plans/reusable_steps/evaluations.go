@@ -8,7 +8,7 @@ import (
 	"github.com/revanite-io/pvtr-github-repo/data"
 )
 
-func PayloadCheck(payloadData interface{}) (payload data.Payload, message string) {
+func VerifyPayload(payloadData interface{}) (payload data.Payload, message string) {
 	payload, ok := payloadData.(data.Payload)
 	if !ok {
 		message = fmt.Sprintf("Malformed assessment: expected payload type %T, got %T (%v)", data.Payload{}, payloadData, payloadData)
@@ -21,7 +21,7 @@ func NotImplemented(payloadData interface{}, changes map[string]*layer4.Change) 
 }
 
 func HasSecurityInsightsFile(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	payload, message := PayloadCheck(payloadData)
+	payload, message := VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -34,7 +34,7 @@ func HasSecurityInsightsFile(payloadData interface{}, _ map[string]*layer4.Chang
 }
 
 func HasMadeReleases(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	payload, message := PayloadCheck(payloadData)
+	payload, message := VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}

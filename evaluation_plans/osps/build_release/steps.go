@@ -11,7 +11,7 @@ import (
 )
 
 func releaseHasUniqueIdentifier(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -86,7 +86,7 @@ func insecureURI(uri string) bool {
 }
 
 func ensureInsightsLinksUseHTTPS(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -105,7 +105,7 @@ func ensureInsightsLinksUseHTTPS(payloadData interface{}, _ map[string]*layer4.C
 }
 
 func ensureGitHubWebsiteLinkUsesHTTPS(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -117,7 +117,7 @@ func ensureGitHubWebsiteLinkUsesHTTPS(payloadData interface{}, _ map[string]*lay
 }
 
 func ensureLatestReleaseHasChangelog(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -130,7 +130,7 @@ func ensureLatestReleaseHasChangelog(payloadData interface{}, _ map[string]*laye
 }
 
 func insightsHasSlsaAttestation(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -146,7 +146,7 @@ func insightsHasSlsaAttestation(payloadData interface{}, _ map[string]*layer4.Ch
 }
 
 func distributionPointsUseHTTPS(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
+	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}

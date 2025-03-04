@@ -7,7 +7,7 @@ import (
 )
 
 func orgRequiresMFA(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	payload, message := reusable_steps.PayloadCheck(payloadData)
+	payload, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -21,7 +21,7 @@ func orgRequiresMFA(payloadData interface{}, _ map[string]*layer4.Change) (resul
 }
 
 func githubBuiltIn(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	_, message = reusable_steps.PayloadCheck(payloadData)
+	_, message = reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -30,7 +30,7 @@ func githubBuiltIn(payloadData interface{}, _ map[string]*layer4.Change) (result
 }
 
 func branchProtectionRestrictsPushes(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	payload, message := reusable_steps.PayloadCheck(payloadData)
+	payload, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -51,7 +51,7 @@ func branchProtectionRestrictsPushes(payloadData interface{}, _ map[string]*laye
 }
 
 func branchProtectionPreventsDeletion(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	payload, message := reusable_steps.PayloadCheck(payloadData)
+	payload, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -69,7 +69,7 @@ func branchProtectionPreventsDeletion(payloadData interface{}, _ map[string]*lay
 }
 
 func workflowPermissionsRestricted(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	payload, message := reusable_steps.PayloadCheck(payloadData)
+	payload, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
@@ -87,7 +87,7 @@ func workflowPermissionsRestricted(payloadData interface{}, _ map[string]*layer4
 }
 
 func workflowDefaultReadPermissions(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	payload, message := reusable_steps.PayloadCheck(payloadData)
+	payload, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}

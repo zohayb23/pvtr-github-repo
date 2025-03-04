@@ -154,7 +154,8 @@ func OSPS_DO_06() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
+			reusable_steps.HasMadeReleases,
+			hasDependencyManagementPolicy,
 		},
 	)
 
