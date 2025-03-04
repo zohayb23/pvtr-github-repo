@@ -69,3 +69,21 @@ func IsActive(payloadData interface{}, _ map[string]*layer4.Change) (result laye
 
 	return result, fmt.Sprintf("Repo Status is %s", payload.Insights.Repository.Status)
 }
+
+func HasIssuesOrDiscussionsEnabled(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if data.Repository.HasDiscussionsEnabled && data.Repository.HasIssuesEnabled {
+		return layer4.Passed, "Both issues and discussions are enabled for the repository"
+	}
+	if data.Repository.HasDiscussionsEnabled {
+		return layer4.Passed, "Discussions are enabled for the repository"
+	}
+	if data.Repository.HasIssuesEnabled {
+		return layer4.Passed, "Issues are enabled for the repository"
+	}
+	return layer4.Failed, "Both issues and discussions are disabled for the repository"
+}

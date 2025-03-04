@@ -6,7 +6,7 @@ import (
 	"github.com/revanite-io/pvtr-github-repo/evaluation_plans/reusable_steps"
 )
 
-func hasUserGuidees(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+func hasUserGuides(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
@@ -30,32 +30,6 @@ func hasDefectReportingGuide(payloadData interface{}, _ map[string]*layer4.Chang
 	// }
 
 	return layer4.Unknown, "Defect report guide was specified in Security Insights data"
-}
-
-func hasIssuesEnabled(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.VerifyPayload(payloadData)
-	if message != "" {
-		return layer4.Unknown, message
-	}
-
-	if data.Repository.HasIssuesEnabled {
-		return layer4.Passed, "Issues are enabled for the repository"
-	}
-
-	return layer4.Failed, "Issues are disabled for the repository"
-}
-
-func hasDiscussionsEnabled(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.VerifyPayload(payloadData)
-	if message != "" {
-		return layer4.Unknown, message
-	}
-
-	if data.Repository.HasDiscussionsEnabled {
-		return layer4.Passed, "Discussions are enabled for the repository"
-	}
-
-	return layer4.Failed, "Discussions are disabled for the repository"
 }
 
 func acceptsVulnReports(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {

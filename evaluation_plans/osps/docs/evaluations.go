@@ -24,7 +24,7 @@ func OSPS_DO_01() (evaluation *layer4.ControlEvaluation) {
 		},
 		[]layer4.AssessmentStep{
 			reusable_steps.HasMadeReleases,
-			hasUserGuidees,
+			hasUserGuides,
 		},
 	)
 
@@ -37,18 +37,6 @@ func OSPS_DO_02() (evaluation *layer4.ControlEvaluation) {
 		Remediation_Guide: "",
 	}
 
-	issuesOrDiscussionsEnabled := func(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-		result, message = hasIssuesEnabled(payloadData, nil)
-		if result == layer4.Passed {
-			return
-		}
-		result, message = hasDiscussionsEnabled(payloadData, nil)
-		if result == layer4.Passed {
-			return
-		}
-		return layer4.Failed, "Both issues and discussions are disabled for the repository"
-	}
-
 	evaluation.AddAssessment(
 		"OSPS-DO-02.01",
 		"When the project has made a release, the project documentation MUST include a guide for reporting defects.",
@@ -59,7 +47,7 @@ func OSPS_DO_02() (evaluation *layer4.ControlEvaluation) {
 		},
 		[]layer4.AssessmentStep{
 			reusable_steps.HasMadeReleases,
-			issuesOrDiscussionsEnabled,
+			reusable_steps.HasIssuesOrDiscussionsEnabled,
 			acceptsVulnReports,
 		},
 	)

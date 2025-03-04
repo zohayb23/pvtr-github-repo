@@ -63,7 +63,7 @@ func OSPS_GV_02() (evaluation *layer4.ControlEvaluation) {
 		[]layer4.AssessmentStep{
 			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
-			reusable_steps.NotImplemented,
+			reusable_steps.HasIssuesOrDiscussionsEnabled,
 		},
 	)
 
