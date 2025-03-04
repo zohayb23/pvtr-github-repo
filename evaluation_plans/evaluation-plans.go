@@ -30,7 +30,7 @@ var (
 		docs.OSPS_DO_02(),
 		docs.OSPS_DO_03(),
 		// docs.OSPS_DO_04(),
-		docs.OSPS_DO_05(),
+		// docs.OSPS_DO_05(),
 		docs.OSPS_DO_06(),
 		governance.OSPS_GV_01(),
 		governance.OSPS_GV_02(),

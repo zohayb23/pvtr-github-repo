@@ -45,7 +45,7 @@ func branchProtectionRestrictsPushes(payloadData interface{}, _ map[string]*laye
 		message = "Branch protection rule requires approving reviews"
 	} else {
 		result = layer4.NeedsReview
-		message = "Branch protection rule does not restrict pushes or require approving reviews"
+		message = "Branch protection rule does not restrict pushes or require approving reviews; Rulesets not yet evaluated."
 	}
 	return
 }

@@ -22,7 +22,8 @@ func OSPS_GV_01() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
+			coreTeamIsListed,
+			projectAdminsListed,
 		},
 	)
 
