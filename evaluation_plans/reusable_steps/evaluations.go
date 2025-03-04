@@ -20,6 +20,15 @@ func NotImplemented(payloadData interface{}, changes map[string]*layer4.Change) 
 	return layer4.Unknown, "Not implemented"
 }
 
+func GithubBuiltIn(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	_, message = VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	return layer4.Passed, "This control is enforced by GitHub for all projects"
+}
+
 func HasSecurityInsightsFile(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	payload, message := VerifyPayload(payloadData)
 	if message != "" {
@@ -44,4 +53,19 @@ func HasMadeReleases(payloadData interface{}, _ map[string]*layer4.Change) (resu
 	}
 
 	return layer4.Passed, fmt.Sprintf("Found %v releases", len(payload.Releases))
+}
+
+func IsActive(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	payload, message := VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if payload.Insights.Repository.Status == "active" {
+		result = layer4.Passed
+	} else {
+		result = layer4.NotApplicable
+	}
+
+	return result, fmt.Sprintf("Repo Status is %s", payload.Insights.Repository.Status)
 }

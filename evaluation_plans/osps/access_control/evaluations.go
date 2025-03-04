@@ -1,6 +1,7 @@
 package access_control
 
 import (
+	"github.com/revanite-io/pvtr-github-repo/evaluation_plans/reusable_steps"
 	"github.com/revanite-io/sci/pkg/layer4"
 )
 
@@ -44,7 +45,7 @@ func OSPS_AC_02() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			githubBuiltIn, // This control is enforced by GitHub for all projects
+			reusable_steps.GithubBuiltIn, // This control is enforced by GitHub for all projects
 		},
 	)
 

@@ -20,15 +20,6 @@ func orgRequiresMFA(payloadData interface{}, _ map[string]*layer4.Change) (resul
 	return layer4.Failed, "Two-factor authentication is NOT configured as required by the parent organization"
 }
 
-func githubBuiltIn(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	_, message = reusable_steps.VerifyPayload(payloadData)
-	if message != "" {
-		return layer4.Unknown, message
-	}
-
-	return layer4.Passed, "This control is enforced by GitHub for all projects"
-}
-
 func branchProtectionRestrictsPushes(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	payload, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {

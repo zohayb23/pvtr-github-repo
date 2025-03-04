@@ -30,3 +30,16 @@ func projectAdminsListed(payloadData interface{}, _ map[string]*layer4.Change) (
 
 	return layer4.Passed, "Project admins were specified in Security Insights data"
 }
+
+func hasRolesAndResponsibilities(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if data.Insights.Repository.Documentation.Governance == "" {
+		return layer4.Failed, "Roles and responsibilities were NOT specified in Security Insights data"
+	}
+
+	return layer4.Passed, "Roles and responsibilities were specified in Security Insights data"
+}
