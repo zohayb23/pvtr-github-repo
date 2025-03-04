@@ -101,7 +101,7 @@ func OSPS_GV_03() (evaluation *layer4.ControlEvaluation) {
 		[]layer4.AssessmentStep{
 			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
-			reusable_steps.NotImplemented,
+			hasContributionGuide,
 		},
 	)
 
