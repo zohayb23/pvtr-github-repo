@@ -48,7 +48,7 @@ func OSPS_LE_02() (evaluation *layer4.ControlEvaluation) {
 		[]layer4.AssessmentStep{
 			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
-			reusable_steps.NotImplemented,
+			goodLicense,
 		},
 	)
 
