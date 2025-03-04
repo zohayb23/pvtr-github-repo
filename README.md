@@ -1,7 +1,5 @@
-# Privateer Plugin example-plugin
+# Privateer Plugin for GitHub Repositories
 
-This wireframe is designed to quickly get your service pack repository up to speed!
+This plugin is currently under construction, intended to provide evaluations for a GitHub Repository based on the Open Source Project Security Baseline control catalog.
 
-Privateer's plugin architecture relies on some key elements being present at the top level of the service pack, all of which are provided along with example code in this repo.
-
-Simply fork or clone this repo and start adjusting the tests to build your own service pack!
+A Dockerfile is provided to build the plugin alongside Privateer as a container image. The plugin is intended to be run as a container image, and will require a GitHub Personal Access Token to be provided as an environment variable.
