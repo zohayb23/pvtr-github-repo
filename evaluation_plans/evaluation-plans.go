@@ -49,11 +49,11 @@ var (
 		sec_assessment.OSPS_SA_01(),
 		sec_assessment.OSPS_SA_02(),
 		sec_assessment.OSPS_SA_03(),
-		vuln_management.OSPS_VM_01(),
+		// vuln_management.OSPS_VM_01(),
 		vuln_management.OSPS_VM_02(),
-		vuln_management.OSPS_VM_03(),
-		vuln_management.OSPS_VM_04(),
-		vuln_management.OSPS_VM_05(),
-		vuln_management.OSPS_VM_06(),
+		// vuln_management.OSPS_VM_03(),
+		// vuln_management.OSPS_VM_04(),
+		// vuln_management.OSPS_VM_05(),
+		// vuln_management.OSPS_VM_06(),
 	}
 )

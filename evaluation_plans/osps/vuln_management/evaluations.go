@@ -42,7 +42,7 @@ func OSPS_VM_02() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 1",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
+			hasSecContact,
 		},
 	)
 
