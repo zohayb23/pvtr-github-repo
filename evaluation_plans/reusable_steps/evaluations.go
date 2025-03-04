@@ -8,11 +8,19 @@ import (
 	"github.com/revanite-io/pvtr-github-repo/data"
 )
 
+func payloadCheck(payloadData interface{}) (payload data.Payload, message string) {
+	payload, ok := payloadData.(data.Payload)
+	if !ok {
+		message = fmt.Sprintf("Malformed assessment: expected payload type %T, got %T (%v)", data.Payload{}, payloadData, payloadData)
+	}
+	return
+}
+
 // TODO: This is only for reference, and should be deleted
 func StepExample(payloadData interface{}, changes map[string]*layer4.Change) (result layer4.Result, message string) {
-	payload, ok := payloadData.(data.Payload) // TODO: return the data, not all of it
-	if !ok {
-		return layer4.Unknown, fmt.Sprintf("Malformed assessment: expected payload type %T, got %T (%v)", data.Payload{}, payloadData, payloadData)
+	payload, message := payloadCheck(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
 	}
 	if payload.GraphQL.Repository.Name != "" {
 		return layer4.Passed, fmt.Sprint("Repo Name: ", payload.GraphQL.Repository.Name)
