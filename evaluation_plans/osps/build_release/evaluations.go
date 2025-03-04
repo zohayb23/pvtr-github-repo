@@ -57,7 +57,7 @@ func OSPS_BR_02() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			passIfNoRelases,
+			reusable_steps.HasMadeReleases,
 			releaseHasUniqueIdentifier,
 		},
 	)
@@ -93,23 +93,23 @@ func OSPS_BR_03() (evaluation *layer4.ControlEvaluation) {
 		},
 		[]layer4.AssessmentStep{
 			ensureGitHubWebsiteLinkUsesHTTPS,
+			reusable_steps.HasSecurityInsightsFile,
 			ensureInsightsLinksUseHTTPS,
 		},
 	)
 
-	// TODO: Implement this assessment
-	// evaluation.AddAssessment(
-	// 	"OSPS-BR-03.02",
-	// 	"When the project lists a URI as an official distribution channel, that URI MUST be exclusively delivered using encrypted channels.",
-	// 	[]string{
-	// 		"Maturity Level 1",
-	// 		"Maturity Level 2",
-	// 		"Maturity Level 3",
-	// 	},
-	// 	[]layer4.AssessmentStep{
-	// 		reusable_steps.NotImplemented,
-	// 	},
-	// )
+	evaluation.AddAssessment(
+		"OSPS-BR-03.02",
+		"When the project lists a URI as an official distribution channel, that URI MUST be exclusively delivered using encrypted channels.",
+		[]string{
+			"Maturity Level 1",
+			"Maturity Level 2",
+			"Maturity Level 3",
+		},
+		[]layer4.AssessmentStep{
+			distributionPointsUseHTTPS,
+		},
+	)
 
 	return
 }
@@ -128,7 +128,8 @@ func OSPS_BR_04() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
+			reusable_steps.HasMadeReleases,
+			ensureLatestReleaseHasChangelog,
 		},
 	)
 
@@ -170,7 +171,9 @@ func OSPS_BR_06() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
+			reusable_steps.HasMadeReleases,
+			reusable_steps.HasSecurityInsightsFile,
+			insightsHasSlsaAttestation,
 		},
 	)
 

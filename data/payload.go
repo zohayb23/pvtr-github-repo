@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ossf/si-tooling/v2/si"
 	"github.com/privateerproj/privateer-sdk/config"
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
@@ -13,7 +12,6 @@ import (
 type Payload struct {
 	GraphqlData
 	*RestData // Pointer in case more data is added during tests
-	Insights  si.SecurityInsights
 	Config    *config.Config
 }
 

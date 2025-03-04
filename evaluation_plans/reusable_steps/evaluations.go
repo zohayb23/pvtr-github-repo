@@ -19,3 +19,29 @@ func PayloadCheck(payloadData interface{}) (payload data.Payload, message string
 func NotImplemented(payloadData interface{}, changes map[string]*layer4.Change) (result layer4.Result, message string) {
 	return layer4.Unknown, "Not implemented"
 }
+
+func HasSecurityInsightsFile(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	payload, message := PayloadCheck(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if payload.Insights.Header.URL == "" {
+		return layer4.Failed, fmt.Sprintf("Security insights file not found \n%v", payload.Insights)
+	}
+
+	return layer4.Passed, "Security insights file found"
+}
+
+func HasMadeReleases(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	payload, message := PayloadCheck(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if len(payload.Releases) == 0 {
+		return layer4.NotApplicable, "No releases found"
+	}
+
+	return layer4.Passed, fmt.Sprintf("Found %v releases", len(payload.Releases))
+}

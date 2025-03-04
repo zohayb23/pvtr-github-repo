@@ -24,7 +24,7 @@ var (
 		build_release.OSPS_BR_02(),
 		build_release.OSPS_BR_03(),
 		build_release.OSPS_BR_04(),
-		build_release.OSPS_BR_05(),
+		// build_release.OSPS_BR_05(), TODO
 		build_release.OSPS_BR_06(),
 		docs.OSPS_DO_01(),
 		docs.OSPS_DO_02(),

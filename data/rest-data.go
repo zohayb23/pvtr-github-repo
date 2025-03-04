@@ -111,8 +111,8 @@ func (r *RestData) loadSecurityInsights() {
 		r.Config.Logger.Error("no contents retrieved from the top level of the repository")
 		return
 	}
-	for _, content := range r.Contents.TopLevel {
-		if r.foundSecurityInsights(content) {
+	for _, dirContents := range r.Contents.TopLevel {
+		if r.foundSecurityInsights(dirContents) {
 			insights, err := si.Read(r.owner, r.repo, "security-insights.yml")
 			r.Insights = insights
 			if err != nil {
@@ -122,8 +122,8 @@ func (r *RestData) loadSecurityInsights() {
 		}
 	}
 	r.getForgeDirContents()
-	for _, content := range r.Contents.ForgeDir {
-		if r.foundSecurityInsights(content) {
+	for _, dirContents := range r.Contents.ForgeDir {
+		if r.foundSecurityInsights(dirContents) {
 			insights, err := si.Read(r.owner, r.repo, ".github/security-insights.yml")
 			r.Insights = insights
 			if err != nil {

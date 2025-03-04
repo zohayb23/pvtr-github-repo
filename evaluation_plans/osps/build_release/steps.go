@@ -10,19 +10,6 @@ import (
 	"github.com/revanite-io/pvtr-github-repo/evaluation_plans/reusable_steps"
 )
 
-func passIfNoRelases(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	data, message := reusable_steps.PayloadCheck(payloadData)
-	if message != "" {
-		return layer4.Unknown, message
-	}
-
-	if len(data.Releases) == 0 {
-		return layer4.PassAndHalt, "No releases found to evaluate"
-	}
-
-	return layer4.Passed, fmt.Sprintf("Found %v releases, continuing to evaluate", len(data.Releases))
-}
-
 func releaseHasUniqueIdentifier(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.PayloadCheck(payloadData)
 	if message != "" {
@@ -100,6 +87,10 @@ func insecureURI(uri string) bool {
 
 func ensureInsightsLinksUseHTTPS(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.PayloadCheck(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
 	links := getLinksFromInsights(data)
 	var badURIs []string
 	for _, link := range links {
@@ -115,8 +106,65 @@ func ensureInsightsLinksUseHTTPS(payloadData interface{}, _ map[string]*layer4.C
 
 func ensureGitHubWebsiteLinkUsesHTTPS(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.PayloadCheck(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
 	if insecureURI(data.WebsiteURL) {
 		return layer4.Passed, fmt.Sprintf("The website URI linked from GitHub uses an insecure protocol: %v", data.WebsiteURL)
 	}
 	return layer4.Passed, fmt.Sprintf("The website URI linked from GitHub uses a secure protocol: %v", data.WebsiteURL)
+}
+
+func ensureLatestReleaseHasChangelog(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.PayloadCheck(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	releaseDescription := data.Repository.LatestRelease.Description
+	if strings.Contains(releaseDescription, "Change Log") || strings.Contains(releaseDescription, "Changelog") {
+		return layer4.Passed, "Mention of a changelog found in the latest release"
+	}
+	return layer4.Failed, "The latest release does not have mention of a changelog: \n" + releaseDescription
+}
+
+func insightsHasSlsaAttestation(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.PayloadCheck(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	attestations := data.Insights.Repository.Release.Attestations
+
+	for _, attestation := range attestations {
+		if attestation.PredicateURI == "https://slsa.dev/provenance/v1" {
+			return layer4.Passed, "Found SLSA attestation in security insights"
+		}
+	}
+	return layer4.Failed, "No SLSA attestation found in security insights"
+}
+
+func distributionPointsUseHTTPS(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.PayloadCheck(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	distributionPoints := data.Insights.Repository.Release.DistributionPoints
+
+	if len(distributionPoints) == 0 {
+		return layer4.NotApplicable, "No official distribution points found in Security Insights data"
+	}
+
+	var badURIs []string
+	for _, point := range distributionPoints {
+		if insecureURI(point.URI) {
+			badURIs = append(badURIs, point.URI)
+		}
+	}
+	if len(badURIs) > 0 {
+		return layer4.Failed, fmt.Sprintf("The following distribution points do not use HTTPS: %v", strings.Join(badURIs, ", "))
+	}
+	return layer4.Passed, "All distribution points use HTTPS"
 }
