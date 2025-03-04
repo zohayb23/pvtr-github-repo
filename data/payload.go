@@ -11,24 +11,26 @@ import (
 )
 
 type Payload struct {
-	GraphQL  GraphqlData
+	GraphqlData
 	Insights si.SecurityInsights
 	Metadata RepoMetadata
 	Config   *config.Config
 }
 
 func Loader(config *config.Config) (payload interface{}, err error) {
-	graphQL, err := getGraphqlData(config)
+	graphql, err := getGraphqlData(config)
+	if err != nil {
+		return nil, err
+	}
 	rest, err := getRestData(config)
 	if err != nil {
 		return nil, err
 	}
-
 	return interface{}(Payload{
-		GraphQL:  graphQL,
-		Insights: rest.Insights,
-		Metadata: rest.Metadata,
-		Config:   config,
+		GraphqlData: graphql,
+		Insights:    rest.Insights,
+		Metadata:    rest.Metadata,
+		Config:      config,
 	}), nil
 }
 
