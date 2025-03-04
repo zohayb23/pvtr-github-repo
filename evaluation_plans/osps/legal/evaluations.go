@@ -22,6 +22,7 @@ func OSPS_LE_01() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
+			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
 			reusable_steps.GithubBuiltIn,
 		},
@@ -45,6 +46,7 @@ func OSPS_LE_02() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
+			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
 			reusable_steps.NotImplemented,
 		},
@@ -59,6 +61,7 @@ func OSPS_LE_02() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
+			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
 			reusable_steps.NotImplemented,
 		},
@@ -82,6 +85,7 @@ func OSPS_LE_03() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
+			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
 			reusable_steps.NotImplemented,
 		},
@@ -96,6 +100,7 @@ func OSPS_LE_03() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
+			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
 			reusable_steps.NotImplemented,
 		},
