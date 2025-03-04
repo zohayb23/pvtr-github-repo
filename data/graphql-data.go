@@ -19,7 +19,7 @@ type GraphqlData struct {
 		IsSecurityPolicyEnabled  bool
 		DefaultBranchRef         struct {
 			Name          string
-			RefUpdateRule struct { // Docs say this works for non-admin viewers, but I haven't managed to do that yet
+			RefUpdateRule struct {
 				AllowsDeletions              bool
 				AllowsForcePushes            bool
 				RequiredApprovingReviewCount int

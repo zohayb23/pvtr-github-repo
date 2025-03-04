@@ -24,7 +24,7 @@ func OSPS_AC_01() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			orgRequiresMFA,
 		},
 	)
 
@@ -46,7 +46,7 @@ func OSPS_AC_02() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			githubBuiltIn, // This control is enforced by GitHub for all projects
 		},
 	)
 
@@ -68,7 +68,7 @@ func OSPS_AC_03() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			branchProtectionRestrictsPushes, // This checks branch protection, but not rulesets yet
 		},
 	)
 
@@ -81,7 +81,7 @@ func OSPS_AC_03() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			branchProtectionPreventsDeletion, // This checks branch protection, but not rulesets yet
 		},
 	)
 
@@ -102,7 +102,7 @@ func OSPS_AC_04() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			reusable_steps.NotImplemented,
 		},
 	)
 
@@ -113,7 +113,7 @@ func OSPS_AC_04() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			reusable_steps.NotImplemented,
 		},
 	)
 

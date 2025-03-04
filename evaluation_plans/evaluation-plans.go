@@ -19,7 +19,7 @@ var (
 		access_control.OSPS_AC_01(),
 		access_control.OSPS_AC_02(),
 		access_control.OSPS_AC_03(),
-		access_control.OSPS_AC_04(),
+		// access_control.OSPS_AC_04(),
 		build_release.OSPS_BR_01(),
 		build_release.OSPS_BR_02(),
 		build_release.OSPS_BR_03(),

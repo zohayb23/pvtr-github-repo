@@ -23,7 +23,7 @@ func OSPS_DO_01() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			reusable_steps.NotImplemented,
 		},
 	)
 
@@ -45,7 +45,7 @@ func OSPS_DO_02() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			reusable_steps.NotImplemented,
 		},
 	)
 
@@ -65,7 +65,7 @@ func OSPS_DO_03() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			reusable_steps.NotImplemented,
 		},
 	)
 
@@ -76,7 +76,7 @@ func OSPS_DO_03() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			reusable_steps.NotImplemented,
 		},
 	)
 
@@ -96,7 +96,7 @@ func OSPS_DO_04() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			reusable_steps.NotImplemented,
 		},
 	)
 
@@ -116,7 +116,7 @@ func OSPS_DO_05() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			reusable_steps.NotImplemented,
 		},
 	)
 
@@ -137,7 +137,7 @@ func OSPS_DO_06() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.StepExample,
+			reusable_steps.NotImplemented,
 		},
 	)
 
