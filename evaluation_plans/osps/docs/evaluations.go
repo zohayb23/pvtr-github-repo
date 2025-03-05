@@ -73,6 +73,7 @@ func OSPS_DO_03() (evaluation *layer4.ControlEvaluation) {
 		},
 	)
 
+	// Just run the previous assessments for now
 	// TODO: Implement this assessment
 	// evaluation.AddAssessment(
 	// 	"OSPS-DO-03.02",

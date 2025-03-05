@@ -12,8 +12,9 @@ type GraphqlData struct {
 	} `graphql:"organization(login: $owner)"`
 
 	Repository struct {
-		WebCommitSignoffRequired bool
 		Name                     string
+		IsPrivate                bool
+		WebCommitSignoffRequired bool
 		HasDiscussionsEnabled    bool
 		HasIssuesEnabled         bool
 		IsSecurityPolicyEnabled  bool

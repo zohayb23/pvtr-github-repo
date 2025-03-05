@@ -53,6 +53,7 @@ func OSPS_LE_02() (evaluation *layer4.ControlEvaluation) {
 		},
 	)
 
+	// Just run the previous assessments for now
 	// TODO: Implement this assessment
 	// evaluation.AddAssessment(
 	// 	"OSPS-LE-02.02",
@@ -93,20 +94,22 @@ func OSPS_LE_03() (evaluation *layer4.ControlEvaluation) {
 		},
 	)
 
-	evaluation.AddAssessment(
-		"OSPS-LE-03.02",
-		"While active, the license for the released software assets MUST be included in the released source code, or in a LICENSE file, COPYING file, or LICENSE/ directory alongside the corresponding release assets.",
-		[]string{
-			"Maturity Level 1",
-			"Maturity Level 2",
-			"Maturity Level 3",
-		},
-		[]layer4.AssessmentStep{
-			reusable_steps.HasSecurityInsightsFile,
-			reusable_steps.IsActive,
-			reusable_steps.NotImplemented,
-		},
-	)
+	// Just run the previous assessments for now
+	// TODO: Implement this assessment
+	// evaluation.AddAssessment(
+	// 	"OSPS-LE-03.02",
+	// 	"While active, the license for the released software assets MUST be included in the released source code, or in a LICENSE file, COPYING file, or LICENSE/ directory alongside the corresponding release assets.",
+	// 	[]string{
+	// 		"Maturity Level 1",
+	// 		"Maturity Level 2",
+	// 		"Maturity Level 3",
+	// 	},
+	// 	[]layer4.AssessmentStep{
+	// 		reusable_steps.HasSecurityInsightsFile,
+	// 		reusable_steps.IsActive,
+	// 		reusable_steps.NotImplemented,
+	// 	},
+	// )
 
 	return
 }

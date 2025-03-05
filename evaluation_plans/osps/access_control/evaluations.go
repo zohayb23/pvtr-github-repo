@@ -105,6 +105,7 @@ func OSPS_AC_04() (evaluation *layer4.ControlEvaluation) {
 		},
 	)
 
+	// Just run the previous assessments for now
 	// TODO: Implement this assessment
 	// evaluation.AddAssessment(
 	// 	"OSPS-AC-04.02",

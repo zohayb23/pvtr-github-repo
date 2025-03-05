@@ -62,6 +62,7 @@ func OSPS_BR_02() (evaluation *layer4.ControlEvaluation) {
 		},
 	)
 
+	// Just run the previous assessments for now
 	// TODO: Implement this assessment
 	// evaluation.AddAssessment(
 	// 	"OSPS-BR-02.02",

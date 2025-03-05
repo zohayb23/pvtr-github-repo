@@ -25,7 +25,7 @@ func OSPS_QA_01() (evaluation *layer4.ControlEvaluation) {
 		[]layer4.AssessmentStep{
 			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
-			reusable_steps.NotImplemented,
+			repoIsPublic,
 		},
 	)
 
@@ -38,7 +38,7 @@ func OSPS_QA_01() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
+			reusable_steps.GithubBuiltIn,
 		},
 	)
 
