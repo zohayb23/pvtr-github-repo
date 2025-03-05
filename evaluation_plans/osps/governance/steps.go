@@ -64,3 +64,16 @@ func hasContributionGuide(payloadData interface{}, _ map[string]*layer4.Change) 
 
 	return layer4.Failed, "Contribution guide not found in Security Insights data or via GitHub API"
 }
+
+func hasContributionReviewPolicy(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if data.Insights.Repository.Documentation.ReviewPolicy != "" {
+		return layer4.Passed, "Code review guide was specified in Security Insights data"
+	}
+
+	return layer4.Failed, "Code review guide was NOT specified in Security Insights data"
+}
