@@ -51,15 +51,15 @@ func hasContributionGuide(payloadData interface{}, _ map[string]*layer4.Change) 
 	}
 
 	if data.Insights.Project.Documentation.CodeOfConduct != "" && data.Insights.Repository.Documentation.Contributing != "" {
-		return layer4.Failed, "Contributing guide and code of conduct locations specified in Security Insights data"
+		return layer4.Passed, "Contributing guide specified in Security Insights data (Bonus: code of conduct location also specified)"
 	}
 
 	if data.Repository.ContributingGuidelines.Body != "" && data.Insights.Project.Documentation.CodeOfConduct != "" {
-		return layer4.Passed, "Contributing guide was found via GitHub API and code of conduct was specified in Security Insights data"
+		return layer4.Passed, "Contributing guide was found via GitHub API (Bonus: code of conduct was specified in Security Insights data)"
 	}
 
 	if data.Repository.ContributingGuidelines.Body != "" {
-		return layer4.NeedsReview, "Contributing guide was found via GitHub API, but code of conduct was NOT specified in Security Insights data"
+		return layer4.NeedsReview, "Contributing guide was found via GitHub API (Reccomendation: Add code of conduct location to Security Insights data)"
 	}
 
 	return layer4.Failed, "Contribution guide not found in Security Insights data or via GitHub API"
