@@ -4,8 +4,8 @@ go 1.23.4
 
 require (
 	github.com/ossf/si-tooling/v2 v2.0.4
-	github.com/privateerproj/privateer-sdk v1.0.0
-	github.com/revanite-io/sci v0.1.7
+	github.com/privateerproj/privateer-sdk v1.0.1
+	github.com/revanite-io/sci v0.1.8
 	github.com/shurcooL/githubv4 v0.0.0-20240727222349-48295856cce7
 	golang.org/x/oauth2 v0.18.0
 )
@@ -50,6 +50,6 @@ require (
 )
 
 // Uncomment if you're working on a dependency locally
-replace github.com/privateerproj/privateer-sdk => ../../privateerproj/privateer-sdk
+// replace github.com/privateerproj/privateer-sdk => ../../privateerproj/privateer-sdk
 
-replace github.com/revanite-io/sci => ../sci
+// replace github.com/revanite-io/sci => ../sci
