@@ -50,6 +50,17 @@ func splitSpdxExpression(expression string) (spdx_ids []string) {
 	return
 }
 
+func foundLicense(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+	if data.Repository.LicenseInfo.Url == "" {
+		return layer4.Failed, "License was not found in a well known location via the GitHub API"
+	}
+	return layer4.Passed, "License was found in a well known location via the GitHub API"
+}
+
 func goodLicense(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
@@ -70,7 +81,6 @@ func goodLicense(payloadData interface{}, _ map[string]*layer4.Change) (result l
 	spdx_ids_a := splitSpdxExpression(apiInfo)
 	spdx_ids_b := splitSpdxExpression(siInfo)
 	spdx_ids := append(spdx_ids_a, spdx_ids_b...)
-	data.Config.Logger.Info(fmt.Sprintf(" --- spdx_ids: %s", spdx_ids))
 	badLicenses := []string{}
 	for _, spdx_id := range spdx_ids {
 		var validId bool
@@ -87,8 +97,8 @@ func goodLicense(payloadData interface{}, _ map[string]*layer4.Change) (result l
 		}
 	}
 	approvedLicenses := strings.Join(spdx_ids, ", ")
-	data.Config.Logger.Trace(fmt.Sprintf("Non-approved licenses: %s", badLicenses))
 	data.Config.Logger.Trace(fmt.Sprintf("Approved licenses: %s", approvedLicenses))
+	data.Config.Logger.Trace(fmt.Sprintf("Non-approved licenses: %s", badLicenses))
 
 	if len(badLicenses) > 0 {
 		return layer4.Failed, fmt.Sprintf("These licenses are not OSI or FSF approved: %s", strings.Join(badLicenses, ", "))

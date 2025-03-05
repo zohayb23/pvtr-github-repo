@@ -48,24 +48,26 @@ func OSPS_LE_02() (evaluation *layer4.ControlEvaluation) {
 		[]layer4.AssessmentStep{
 			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
+			foundLicense,
 			goodLicense,
 		},
 	)
 
-	evaluation.AddAssessment(
-		"OSPS-LE-02.02",
-		"While active, the license for the released software assets MUST meet the OSI Open Source Definition or the FSF Free Software Definition.",
-		[]string{
-			"Maturity Level 1",
-			"Maturity Level 2",
-			"Maturity Level 3",
-		},
-		[]layer4.AssessmentStep{
-			reusable_steps.HasSecurityInsightsFile,
-			reusable_steps.IsActive,
-			reusable_steps.NotImplemented,
-		},
-	)
+	// TODO: Implement this assessment
+	// evaluation.AddAssessment(
+	// 	"OSPS-LE-02.02",
+	// 	"While active, the license for the released software assets MUST meet the OSI Open Source Definition or the FSF Free Software Definition.",
+	// 	[]string{
+	// 		"Maturity Level 1",
+	// 		"Maturity Level 2",
+	// 		"Maturity Level 3",
+	// 	},
+	// 	[]layer4.AssessmentStep{
+	// 		reusable_steps.HasSecurityInsightsFile,
+	// 		reusable_steps.IsActive,
+	// 		reusable_steps.NotImplemented,
+	// 	},
+	// )
 
 	return
 }
@@ -87,7 +89,7 @@ func OSPS_LE_03() (evaluation *layer4.ControlEvaluation) {
 		[]layer4.AssessmentStep{
 			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
-			reusable_steps.NotImplemented,
+			foundLicense,
 		},
 	)
 
