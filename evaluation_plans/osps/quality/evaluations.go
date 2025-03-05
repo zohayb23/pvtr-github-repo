@@ -116,20 +116,22 @@ func OSPS_QA_04() (evaluation *layer4.ControlEvaluation) {
 		[]layer4.AssessmentStep{
 			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
-			reusable_steps.NotImplemented,
+			insightsListsRepositories,
 		},
 	)
 
-	evaluation.AddAssessment(
-		"OSPS-QA-04.02",
-		"When the project has made a release comprising multiple source code repositories, all subprojects MUST enforce security requirements that are as strict or stricter than the primary codebase.",
-		[]string{
-			"Maturity Level 3",
-		},
-		[]layer4.AssessmentStep{
-			reusable_steps.NotImplemented,
-		},
-	)
+	// Just run the previous assessments for now
+	// TODO: Implement this assessment
+	// evaluation.AddAssessment(
+	// 	"OSPS-QA-04.02",
+	// 	"When the project has made a release comprising multiple source code repositories, all subprojects MUST enforce security requirements that are as strict or stricter than the primary codebase.",
+	// 	[]string{
+	// 		"Maturity Level 3",
+	// 	},
+	// 	[]layer4.AssessmentStep{
+	// 		reusable_steps.NotImplemented,
+	// 	},
+	// )
 
 	return
 }
@@ -148,6 +150,7 @@ func OSPS_QA_05() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 2",
 			"Maturity Level 3",
 		},
+		// TODO: Figure out how to walk the repo tree and check for isBinary
 		[]layer4.AssessmentStep{
 			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,

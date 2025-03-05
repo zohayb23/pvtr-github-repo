@@ -17,3 +17,16 @@ func repoIsPublic(payloadData interface{}, _ map[string]*layer4.Change) (result 
 
 	return layer4.Failed, "Repository is private"
 }
+
+func insightsListsRepositories(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if len(data.Insights.Project.Repositories) > 0 {
+		return layer4.Passed, "Insights contains a list of repositories"
+	}
+
+	return layer4.Failed, "Insights does NOT contains a list of repositories"
+}
