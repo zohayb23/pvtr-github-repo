@@ -10,6 +10,14 @@ binary: package build
 
 release: release-nix release-win release-mac
 
+docker-build: release-nix
+	@echo "  >  Building docker image ..."
+	@docker build -t $(PACKNAME) .
+
+docker-run:
+	@echo "  >  Running docker image ..."
+	docker run -it --rm -v ./config.yml:/.privateer/config.yml -v ./docker_output:/evaluation_results $(PACKNAME)
+
 build:
 	@echo "  >  Building binary ..."
 	@go build -o $(PACKNAME) -ldflags="$(BUILD_FLAGS)"

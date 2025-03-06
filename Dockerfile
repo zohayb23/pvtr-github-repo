@@ -1,24 +1,26 @@
-FROM golang:1.23.4-alpine3.21 AS build
-RUN apk add --no-cache make git
+FROM alpine:3.21 AS core
+RUN apk add --no-cache wget tar unzip
+
 WORKDIR /app
-RUN git clone https://github.com/privateerproj/privateer.git .
-RUN go mod tidy && \
-    make go-build
+ARG VERSION=0.7.0
+ARG PLATFORM=Linux_x86_64  # Change this based on your target system
+
+RUN wget https://github.com/privateerproj/privateer/releases/download/v${VERSION}/privateer_${PLATFORM}.tar.gz
+RUN tar -xzf privateer_${PLATFORM}.tar.gz
 
 FROM golang:1.23.4-alpine3.21 AS plugin
 RUN apk add --no-cache make git
 WORKDIR /plugin
 COPY . .
-RUN go mod tidy && \
-    make build
+RUN make binary
 
 FROM golang:1.23.4-alpine3.21
-ARG log_level="debug"
-ENV LOG_LEVEL=$log_level
 RUN apk add --no-cache make git && \
     mkdir -p /.privateer/bin
 WORKDIR /.privateer/bin
-COPY --from=build /app/privateer .
-COPY --from=plugin /plugin/pvtr-github-repo .
+COPY --from=core /app/privateer .
+COPY --from=plugin /plugin/github-repo .
 
-CMD ["./privateer", "run", "--binaries-path", ".", "--config", "../config.yml", "--loglevel", "${LOG_LEVEL}"]
+# The config file must be provided at run time.
+# example: docker run -v /path/to/config.yml:/.privateer/bin/config.yml privateer-image
+CMD ["./privateer", "run", "--binaries-path", ".", "--config", "/.privateer/config.yml"]

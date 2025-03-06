@@ -25,7 +25,7 @@ const spdxURL = "https://raw.githubusercontent.com/spdx/license-list-data/main/j
 
 func getLicenseList(data data.Payload) (LicenseList, string) {
 	goodLicenseList := LicenseList{}
-	response, err := data.MakeApiCall(spdxURL)
+	response, err := data.MakeApiCall(spdxURL, false)
 	if err != nil {
 		return goodLicenseList, fmt.Sprintf("Failed to fetch good license data: %s", err.Error())
 	}
