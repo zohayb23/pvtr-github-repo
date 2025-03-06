@@ -8,9 +8,15 @@ Assessment development is currently addressing the [Open Source Project Security
 
 As possible, the goal is to work on the OSPS Baseline maturity levels from the lowest to highest.
 
-While development is ongoing, the best way to run the plugin is to pull the code locally and run it. The long-term intent is to enable operations at scale through the [Privateer](https://github.com/privateerproj) harness.
+While development is ongoing, the best way to run the plugin is to pull the code locally and run the local Dockerfile.
 
 1. Pull the repo
 2. Modify `example-config.yml` to use your values, and rename it to `config.yml`
-3. From the top level of the repo directory: `go run . debug --service=<your repo name>`
-4. Review the output in the CLI, or the output directory
+3. Build the Docker Image: `make docker build`
+4. Run the Docker Image: `make docker run`
+5. Review the output in the directory you've specified in your config file
+
+> [NOTE!]
+> The Dockerfile does not currenly provide a prettified output.
+> Review the `.log` file to see the simplest results info.
+
