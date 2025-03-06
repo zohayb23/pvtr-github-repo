@@ -20,7 +20,8 @@ RUN apk add --no-cache make git && \
 WORKDIR /.privateer/bin
 COPY --from=core /app/privateer .
 COPY --from=plugin /plugin/github-repo .
+COPY --from=plugin /plugin/container-entrypoint.sh .
 
 # The config file must be provided at run time.
 # example: docker run -v /path/to/config.yml:/.privateer/bin/config.yml privateer-image
-CMD ["./privateer", "run", "--binaries-path", ".", "--config", "/.privateer/config.yml"]
+CMD ["./container-entrypoint.sh"]
