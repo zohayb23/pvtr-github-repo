@@ -8,6 +8,18 @@ Assessment development is currently addressing the [Open Source Project Security
 
 As possible, the goal is to work on the OSPS Baseline maturity levels from the lowest to highest.
 
+## Usage
+
+### GitHub Actions Example
+
+We are currently running this plugin to scan multiple repositories at once in the `privateerproj` GitHub organization.
+
+- [Config](https://github.com/privateerproj/.github/blob/main/.github/workflows/osps-baseline.yml)
+- [Workflow Definition](https://github.com/privateerproj/.github/blob/main/.github/pvtr-config.yml)
+- [Action Results](https://github.com/privateerproj/.github/actions/runs/13691384519/job/38285134201)
+
+### Running the latest changes
+
 While development is ongoing, the best way to run the plugin is to pull the code locally and run the local Dockerfile.
 
 1. Pull the repo
@@ -15,8 +27,4 @@ While development is ongoing, the best way to run the plugin is to pull the code
 3. Build the Docker Image: `make docker build`
 4. Run the Docker Image: `make docker run`
 5. Review the output in the directory you've specified in your config file
-
-> [NOTE!]
-> The Dockerfile does not currenly provide a prettified output.
-> Review the `.log` file to see the simplest results info.
 
