@@ -2,7 +2,7 @@
 osps-baseline
 test_output
 pvtr-github-repo
-pvtr-osps-baseline
+github-repo
 
 # ignore any local dev config file
 config.yml

@@ -6,18 +6,19 @@ import (
 	"github.com/revanite-io/pvtr-github-repo/evaluation_plans/reusable_steps"
 )
 
-func orgRequiresMFA(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	payload, message := reusable_steps.VerifyPayload(payloadData)
-	if message != "" {
-		return layer4.Unknown, message
-	}
+func orgRequiresMFA(_ interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	return layer4.NeedsReview, "GitHub API requires org:admin scope to access MFA Required status, which we are not comfortable requesting from you. Please review the organization settings manually."
+	// payload, message := reusable_steps.VerifyPayload(payloadData)
+	// if message != "" {
+	// 	return layer4.Unknown, message
+	// }
 
-	required := payload.Organization.RequiresTwoFactorAuthentication
+	// required := payload.Organization.RequiresTwoFactorAuthentication
 
-	if required {
-		return layer4.Passed, "Two-factor authentication is configured as required by the parent organization"
-	}
-	return layer4.Failed, "Two-factor authentication is NOT configured as required by the parent organization"
+	// if required {
+	// 	return layer4.Passed, "Two-factor authentication is configured as required by the parent organization"
+	// }
+	// return layer4.Failed, "Two-factor authentication is NOT configured as required by the parent organization"
 }
 
 func branchProtectionRestrictsPushes(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
