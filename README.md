@@ -2,6 +2,8 @@
 
 This plugin is designed to test a GitHub repository using automated assessments compatible with the [Simplified Compliance Infrastructure](https://github.com/revanite-io/sci) Layer 4 data types.
 
+Many of the assessments require a [Security Insights](https://github.com/ossf/security-insights-spec) file to be present at the root of the repository, or `./github/security-insights.yml`.
+
 ## Work in Progress
 
 Assessment development is currently addressing the [Open Source Project Security Baseline v2025.02.25](https://baseline.openssf.org).
@@ -12,7 +14,7 @@ As possible, the goal is to work on the OSPS Baseline maturity levels from the l
 
 We've pushed an image to docker hub for use in GitHub Actions. Many tests are currently pending implementation, and only `Maturity Level 1` is currently recommended for use.
 
-You will need to set up a GitHub personal access token with the repository read permissions. This token should be added to your config file, or — if using the example pipeline below — as a secret in your repository.
+You will also need to set up a GitHub personal access token with the repository read permissions. This token should be added to your config file, or — if using the example pipeline below — as a secret in your repository.
 
 ### Example GHA Setup
 
