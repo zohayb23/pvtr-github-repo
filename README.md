@@ -12,7 +12,7 @@ As possible, the goal is to work on the OSPS Baseline maturity levels from the l
 
 We've pushed an image to docker hub for use in GitHub Actions. Many tests are currently pending implementation, and only `Maturity Level 1` is currently recommended for use.
 
-You will need to set up a GitHub peronal access token with the repository read permissions. This token should be added to your config file, or — if using the example pipeline below — as a secret in your repository.
+You will need to set up a GitHub personal access token with the repository read permissions. This token should be added to your config file, or — if using the example pipeline below — as a secret in your repository.
 
 ### Example GHA Setup
 
