@@ -7,7 +7,7 @@ import (
 )
 
 func orgRequiresMFA(_ interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
-	return layer4.NeedsReview, "GitHub API requires org:admin scope to access MFA Required status, which we are not comfortable requesting from you. Please review the organization settings manually."
+	return layer4.NeedsReview, "Not implemented. (GitHub API requires org:admin scope to read MFA Required status, which you should not be giving out to external applications; Please review the organization settings manually)"
 	// payload, message := reusable_steps.VerifyPayload(payloadData)
 	// if message != "" {
 	// 	return layer4.Unknown, message

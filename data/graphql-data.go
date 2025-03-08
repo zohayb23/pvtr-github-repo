@@ -6,19 +6,18 @@ import (
 
 type GraphqlData struct {
 	// Need to update token for this
-	Organization struct {
-		// RequiresTwoFactorAuthentication bool
-		WebCommitSignoffRequired bool
-	} `graphql:"organization(login: $owner)"`
+	// Organization struct {
+	// RequiresTwoFactorAuthentication bool
+	// WebCommitSignoffRequired bool
+	// } `graphql:"organization(login: $owner)"`
 
 	Repository struct {
-		Name                     string
-		IsPrivate                bool
-		WebCommitSignoffRequired bool
-		HasDiscussionsEnabled    bool
-		HasIssuesEnabled         bool
-		IsSecurityPolicyEnabled  bool
-		DefaultBranchRef         struct {
+		Name                    string
+		IsPrivate               bool
+		HasDiscussionsEnabled   bool
+		HasIssuesEnabled        bool
+		IsSecurityPolicyEnabled bool
+		DefaultBranchRef        struct {
 			Name          string
 			RefUpdateRule struct {
 				AllowsDeletions              bool

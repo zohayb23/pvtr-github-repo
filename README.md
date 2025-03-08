@@ -8,19 +8,23 @@ Assessment development is currently addressing the [Open Source Project Security
 
 As possible, the goal is to work on the OSPS Baseline maturity levels from the lowest to highest.
 
-## Usage
+## GitHub Actions Usage
 
-### GitHub Actions Example
+We've pushed an image to docker hub for use in GitHub Actions. Many tests are currently pending implementation, and only `Maturity Level 1` is currently recommended for use.
 
-We are currently running this plugin to scan multiple repositories at once in the `privateerproj` GitHub organization.
+You will need to set up a GitHub peronal access token with the repository read permissions. This token should be added to your config file, or — if using the example pipeline below — as a secret in your repository.
+
+### Example GHA Setup
 
 - [Config](https://github.com/privateerproj/.github/blob/main/.github/workflows/osps-baseline.yml)
 - [Workflow Definition](https://github.com/privateerproj/.github/blob/main/.github/pvtr-config.yml)
 - [Action Results](https://github.com/privateerproj/.github/actions/runs/13691384519/job/38285134201)
 
-### Running the latest changes
+## Local Development
 
-While development is ongoing, the best way to run the plugin is to pull the code locally and run the local Dockerfile.
+While working on tests, the best way to run the plugin is via `go run . debug --service=<your-service>`. Ensure your local `config` file is set up correctly beforehand.
+
+You may also pull the code locally and run the local Dockerfile:
 
 1. Pull the repo
 2. Modify `example-config.yml` to use your values, and rename it to `config.yml`
@@ -28,3 +32,6 @@ While development is ongoing, the best way to run the plugin is to pull the code
 4. Run the Docker Image: `make docker run`
 5. Review the output in the directory you've specified in your config file
 
+## Required Token Scopes
+
+![Token Scopes](./token-scopes.png)

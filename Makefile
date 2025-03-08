@@ -18,6 +18,16 @@ docker-run:
 	@echo "  >  Running docker image ..."
 	docker run -it --rm -v ./config.yml:/.privateer/config.yml -v ./docker_output:/evaluation_results $(PACKNAME)
 
+# Pushing to eddieknight docker hub namespace until a more preferred option exists
+docker-build-release:
+	@echo "  >  Building docker images for linux/amd64 and linux/arm64..."
+	docker buildx build --platform linux/amd64,linux/arm64 -t eddieknight/pvtr-github-repo:latest .
+
+docker-run-latest:
+	@echo "  >  Running docker image ..."
+	docker pull eddieknight/pvtr-github-repo:latest
+	docker run -it --rm -v ./config.yml:/.privateer/config.yml -v ./docker_output:/evaluation_results eddieknight/pvtr-github-repo:latest
+
 build:
 	@echo "  >  Building binary ..."
 	@go build -o $(PACKNAME) -ldflags="$(BUILD_FLAGS)"

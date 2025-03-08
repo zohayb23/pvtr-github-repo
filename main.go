@@ -22,7 +22,7 @@ var (
 	// BuiltAt is the actual build datetime
 	BuiltAt = ""
 
-	PluginName   = "example-plugin"
+	PluginName   = "github-repo"
 	RequiredVars = []string{
 		"owner",
 		"repo",
