@@ -16,8 +16,8 @@ You will need to set up a GitHub peronal access token with the repository read p
 
 ### Example GHA Setup
 
-- [Config](https://github.com/privateerproj/.github/blob/main/.github/workflows/osps-baseline.yml)
-- [Workflow Definition](https://github.com/privateerproj/.github/blob/main/.github/pvtr-config.yml)
+- [Config](https://github.com/privateerproj/.github/blob/main/.github/pvtr-config.yml)
+- [Workflow Definition](https://github.com/privateerproj/.github/blob/main/.github/workflows/osps-baseline.yml)
 - [Action Results](https://github.com/privateerproj/.github/actions/runs/13691384519/job/38285134201)
 
 ## Local Development
