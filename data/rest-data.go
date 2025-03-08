@@ -136,7 +136,6 @@ func (r *RestData) loadSecurityInsights() {
 			return
 		}
 	}
-	r.Config.Logger.Error("no security insights file found")
 }
 
 func (r *RestData) foundSecurityInsights(content DirContents) bool {

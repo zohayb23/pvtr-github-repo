@@ -24,6 +24,7 @@ func OSPS_DO_01() (evaluation *layer4.ControlEvaluation) {
 		},
 		[]layer4.AssessmentStep{
 			reusable_steps.HasMadeReleases,
+			reusable_steps.HasSecurityInsightsFile,
 			hasUserGuides,
 		},
 	)
