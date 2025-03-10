@@ -12,20 +12,28 @@ import (
 )
 
 type RestData struct {
-	owner      string
-	repo       string
-	token      string
-	Config     *config.Config
-	Workflow   Workflow
-	Insights   si.SecurityInsights
-	Name       string `json:"name"`
-	Private    bool   `json:"private"`
-	WebsiteURL string `json:"websiteUrl"`
-	Releases   []ReleaseData
-	Contents   struct {
+	owner        string
+	repo         string
+	token        string
+	Config       *config.Config
+	Organization OrgData
+	Workflow     Workflow
+	Insights     si.SecurityInsights
+	Name         string `json:"name"`
+	Private      bool   `json:"private"`
+	WebsiteURL   string `json:"websiteUrl"`
+	Releases     []ReleaseData
+	Contents     struct {
 		TopLevel []DirContents
 		ForgeDir []DirContents
 	}
+}
+
+type OrgData struct {
+	Name               string        `json:"name"`
+	Blog               string        `json:"blog"`
+	WebSignoffRequired bool          `json:"web_commit_signoff_required"`
+	TwoFactorRequired  *nullableBool `json:"two_factor_requirement_enabled"`
 }
 
 type ReleaseData struct {
@@ -63,7 +71,21 @@ type Workflow struct {
 	CanApprovePullRequest bool   `json:"can_approve_pull_request_reviews"`
 }
 
-var APIBase = "https://api.github.com/repos"
+type nullableBool bool
+
+var APIBase = "https://api.github.com"
+
+func (n *nullableBool) UnmarshalJSON(data []byte) error {
+	if string(data) == "null" {
+		return nil
+	}
+	var b bool
+	if err := json.Unmarshal(data, &b); err != nil {
+		return err
+	}
+	*n = nullableBool(b)
+	return nil
+}
 
 func (r *RestData) Setup() error {
 	r.owner = r.Config.GetString("owner")
@@ -74,6 +96,7 @@ func (r *RestData) Setup() error {
 	r.loadSecurityInsights()
 	r.getWorkflow()
 	r.getReleases()
+	r.loadOrgData()
 	return nil
 }
 
@@ -100,7 +123,7 @@ func (r *RestData) MakeApiCall(endpoint string, isGithub bool) (body []byte, err
 }
 
 func (r *RestData) getSourceFile(owner, repo, path string) (response FileAPIResponse, err error) {
-	endpoint := fmt.Sprintf("%s/%s/%s/contents/%s", APIBase, owner, repo, path)
+	endpoint := fmt.Sprintf("%s/repos/%s/%s/contents/%s", APIBase, owner, repo, path)
 	responseData, err := r.MakeApiCall(endpoint, true)
 	if err != nil {
 		return
@@ -152,7 +175,7 @@ func (r *RestData) foundSecurityInsights(content DirContents) bool {
 }
 
 func (r *RestData) getTopDirContents() {
-	endpoint := fmt.Sprintf("%s/%s/%s/contents", APIBase, r.owner, r.repo)
+	endpoint := fmt.Sprintf("%s/repos/%s/%s/contents", APIBase, r.owner, r.repo)
 	responseData, err := r.MakeApiCall(endpoint, true)
 	if err != nil {
 		r.Config.Logger.Error(fmt.Sprintf("error getting top level contents: %s", err.Error()))
@@ -162,7 +185,7 @@ func (r *RestData) getTopDirContents() {
 }
 
 func (r *RestData) getForgeDirContents() {
-	endpoint := fmt.Sprintf("%s/%s/%s/contents/.github", APIBase, r.owner, r.repo)
+	endpoint := fmt.Sprintf("%s/repos/%s/%s/contents/.github", APIBase, r.owner, r.repo)
 	responseData, err := r.MakeApiCall(endpoint, true)
 	if err != nil {
 		r.Config.Logger.Error(fmt.Sprintf("error getting forge contents: %s", err.Error()))
@@ -172,7 +195,7 @@ func (r *RestData) getForgeDirContents() {
 }
 
 func (r *RestData) getMetadata() error {
-	endpoint := fmt.Sprintf("%s/%s/%s", APIBase, r.owner, r.repo)
+	endpoint := fmt.Sprintf("%s/repos/%s/%s", APIBase, r.owner, r.repo)
 	responseData, err := r.MakeApiCall(endpoint, true)
 	if err != nil {
 		return err
@@ -181,7 +204,7 @@ func (r *RestData) getMetadata() error {
 }
 
 func (r *RestData) getReleases() error {
-	endpoint := fmt.Sprintf("%s/%s/%s/releases", APIBase, r.owner, r.repo)
+	endpoint := fmt.Sprintf("%s/repos/%s/%s/releases", APIBase, r.owner, r.repo)
 	responseData, err := r.MakeApiCall(endpoint, true)
 	if err != nil {
 		return err
@@ -190,7 +213,7 @@ func (r *RestData) getReleases() error {
 }
 
 func (r *RestData) getWorkflow() error {
-	endpoint := fmt.Sprintf("%s/%s/%s/actions/permissions/workflow", APIBase, r.owner, r.repo)
+	endpoint := fmt.Sprintf("%s/repos/%s/%s/actions/permissions/workflow", APIBase, r.owner, r.repo)
 	responseData, err := r.MakeApiCall(endpoint, true)
 	if err != nil {
 		return err
@@ -207,4 +230,16 @@ func (r *RestData) getFileContentByURL(downloadURL string) (string, error) {
 		return "", err
 	}
 	return string(responseData), nil
+}
+
+func (r *RestData) loadOrgData() {
+	endpoint := fmt.Sprintf("%s/orgs/%s", APIBase, r.owner)
+	responseData, err := r.MakeApiCall(endpoint, true)
+	if err != nil {
+		r.Config.Logger.Error(fmt.Sprintf("error getting org data: %s (%s)", err.Error(), endpoint))
+		return
+	}
+	json.Unmarshal(responseData, &r.Organization)
+
+	return
 }

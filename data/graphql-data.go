@@ -5,12 +5,6 @@ import (
 )
 
 type GraphqlData struct {
-	// Need to update token for this
-	// Organization struct {
-	// RequiresTwoFactorAuthentication bool
-	// WebCommitSignoffRequired bool
-	// } `graphql:"organization(login: $owner)"`
-
 	Repository struct {
 		Name                    string
 		IsPrivate               bool
