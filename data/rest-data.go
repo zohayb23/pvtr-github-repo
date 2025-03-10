@@ -71,6 +71,9 @@ type Workflow struct {
 	CanApprovePullRequest bool   `json:"can_approve_pull_request_reviews"`
 }
 
+// Golang bools are binary, but JSON bools can also be null.
+// If null is found, the value of a golang bool is set to false, but
+// the GitHub API sometimes uses the third value when the call is unauthenticated.
 type nullableBool bool
 
 var APIBase = "https://api.github.com"
