@@ -97,7 +97,7 @@ func goodLicense(payloadData interface{}, _ map[string]*layer4.Change) (result l
 		}
 	}
 	approvedLicenses := strings.Join(spdx_ids, ", ")
-	data.Config.Logger.Trace(fmt.Sprintf("Approved licenses: %s", approvedLicenses))
+	data.Config.Logger.Trace(fmt.Sprintf("Requested licenses: %s", approvedLicenses))
 	data.Config.Logger.Trace(fmt.Sprintf("Non-approved licenses: %s", badLicenses))
 
 	if len(badLicenses) > 0 {
