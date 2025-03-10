@@ -40,9 +40,10 @@ func releaseHasUniqueIdentifier(payloadData interface{}, _ map[string]*layer4.Ch
 	return layer4.Passed, "All releases found have a unique name"
 }
 
-func getLinksFromInsights(data data.Payload) []string {
+func getLinks(data data.Payload) []string {
 	si := data.Insights
 	links := []string{
+		data.Organization.Blog,
 		si.Header.URL,
 		si.Header.ProjectSISource,
 		si.Project.Homepage,
@@ -91,7 +92,7 @@ func ensureInsightsLinksUseHTTPS(payloadData interface{}, _ map[string]*layer4.C
 		return layer4.Unknown, message
 	}
 
-	links := getLinksFromInsights(data)
+	links := getLinks(data)
 	var badURIs []string
 	for _, link := range links {
 		if insecureURI(link) {
