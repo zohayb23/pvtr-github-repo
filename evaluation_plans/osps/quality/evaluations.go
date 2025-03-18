@@ -88,7 +88,6 @@ func OSPS_QA_03() (evaluation *layer4.ControlEvaluation) {
 		"OSPS-QA-03.01",
 		"When a commit is made to the primary branch, any automated status checks for commits MUST pass or be manually bypassed.",
 		[]string{
-			"Maturity Level 1", // devvy
 			"Maturity Level 2",
 			"Maturity Level 3",
 		},
