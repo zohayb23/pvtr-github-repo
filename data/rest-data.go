@@ -105,10 +105,10 @@ func (r *RestData) Setup() error {
 	r.repo = r.Config.GetString("repo")
 	r.token = r.Config.GetString("token")
 
-	r.getMetadata()
+	_ = r.getMetadata()
 	r.loadSecurityInsights()
-	r.getWorkflow()
-	r.getReleases()
+	_ = r.getWorkflow()
+	_ = r.getReleases()
 	r.loadOrgData()
 	return nil
 }
@@ -194,7 +194,7 @@ func (r *RestData) getTopDirContents() {
 		r.Config.Logger.Error(fmt.Sprintf("error getting top level contents: %s", err.Error()))
 		return
 	}
-	json.Unmarshal(responseData, &r.Contents.TopLevel)
+	_ = json.Unmarshal(responseData, &r.Contents.TopLevel)
 }
 
 func (r *RestData) getForgeDirContents() {
@@ -204,7 +204,7 @@ func (r *RestData) getForgeDirContents() {
 		r.Config.Logger.Error(fmt.Sprintf("error getting forge contents: %s", err.Error()))
 		return
 	}
-	json.Unmarshal(responseData, &r.Contents.ForgeDir)
+	_ = json.Unmarshal(responseData, &r.Contents.ForgeDir)
 }
 
 func (r *RestData) getMetadata() error {
@@ -237,14 +237,6 @@ func (r *RestData) getWorkflow() error {
 	return nil
 }
 
-func (r *RestData) getFileContentByURL(downloadURL string) (string, error) {
-	responseData, err := r.MakeApiCall(downloadURL, true)
-	if err != nil {
-		return "", err
-	}
-	return string(responseData), nil
-}
-
 func (r *RestData) loadOrgData() {
 	endpoint := fmt.Sprintf("%s/orgs/%s", APIBase, r.owner)
 	responseData, err := r.MakeApiCall(endpoint, true)
@@ -252,9 +244,7 @@ func (r *RestData) loadOrgData() {
 		r.Config.Logger.Error(fmt.Sprintf("error getting org data: %s (%s)", err.Error(), endpoint))
 		return
 	}
-	json.Unmarshal(responseData, &r.Organization)
-
-	return
+	_ = json.Unmarshal(responseData, &r.Organization)
 }
 
 func (r *RestData) GetRulesets(branchName string) []Ruleset {
@@ -262,9 +252,8 @@ func (r *RestData) GetRulesets(branchName string) []Ruleset {
 	responseData, err := r.MakeApiCall(endpoint, true)
 	if err != nil {
 		r.Config.Logger.Error(fmt.Sprintf("error getting rulesets: %s", err.Error()))
-		return nil
 	}
 
-	json.Unmarshal(responseData, &r.Rulesets)
+	_ = json.Unmarshal(responseData, &r.Rulesets)
 	return r.Rulesets
 }

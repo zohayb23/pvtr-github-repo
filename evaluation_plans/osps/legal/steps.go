@@ -33,7 +33,7 @@ func getLicenseList(data data.Payload) (LicenseList, string) {
 	if err != nil {
 		return goodLicenseList, fmt.Sprintf("Failed to unmarshal good license data: %s", err.Error())
 	}
-	if goodLicenseList.Licenses == nil || len(goodLicenseList.Licenses) == 0 {
+	if len(goodLicenseList.Licenses) == 0 {
 		return goodLicenseList, "Good license data was unexpectedly empty"
 	}
 	return goodLicenseList, ""
@@ -43,9 +43,7 @@ func splitSpdxExpression(expression string) (spdx_ids []string) {
 	a := strings.Split(expression, " AND ")
 	for _, aa := range a {
 		b := strings.Split(aa, " OR ")
-		for _, bb := range b {
-			spdx_ids = append(spdx_ids, bb)
-		}
+		spdx_ids = append(spdx_ids, b...)
 	}
 	return
 }

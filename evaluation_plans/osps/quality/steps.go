@@ -52,7 +52,7 @@ func statusChecksAreRequiredByRulesets(payloadData interface{}, _ map[string]*la
 
 	// get the rules that apply to the default branch
 	rules := data.GetRulesets(data.Repository.DefaultBranchRef.Name)
-	if rules == nil || len(rules) == 0 {
+	if len(rules) == 0 {
 		return layer4.Passed, "No rulesets found for default branch, continuing to evaluate branch protection"
 	}
 
