@@ -27,6 +27,16 @@ type RestData struct {
 		TopLevel []DirContents
 		ForgeDir []DirContents
 	}
+	Rulesets []Ruleset
+}
+
+type Ruleset struct {
+	Type       string `json:"type"`
+	Parameters struct {
+		RequiredChecks []struct {
+			Context string `json:"context"`
+		} `json:"required_status_checks"`
+	} `json:"parameters"`
 }
 
 type OrgData struct {
@@ -245,4 +255,16 @@ func (r *RestData) loadOrgData() {
 	json.Unmarshal(responseData, &r.Organization)
 
 	return
+}
+
+func (r *RestData) GetRulesets(branchName string) []Ruleset {
+	endpoint := fmt.Sprintf("%s/repos/%s/%s/rules/branches/%s", APIBase, r.owner, r.repo, branchName)
+	responseData, err := r.MakeApiCall(endpoint, true)
+	if err != nil {
+		r.Config.Logger.Error(fmt.Sprintf("error getting rulesets: %s", err.Error()))
+		return nil
+	}
+
+	json.Unmarshal(responseData, &r.Rulesets)
+	return r.Rulesets
 }
