@@ -254,11 +254,11 @@ func verifyDependencyManifests(payloadData interface{}) (layer4.Result, string) 
 		return layer4.Unknown, message
 	}
 
-	if data.Repository.DefaultBranchRef.Target.Tree.Entries == nil {
+	if data.Repository.Object.Tree.Entries == nil {
 		return layer4.Unknown, "Repository tree entries not available"
 	}
 
-	entries := data.Repository.DefaultBranchRef.Target.Tree.Entries
+	entries := data.Repository.Object.Tree.Entries
 	manifests := data.Repository.DependencyGraphManifests.Nodes
 
 	foundManifests := make(map[string]ManifestResult)
