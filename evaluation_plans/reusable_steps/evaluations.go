@@ -91,3 +91,16 @@ func HasIssuesOrDiscussionsEnabled(payloadData interface{}, _ map[string]*layer4
 	}
 	return layer4.Failed, "Both issues and discussions are disabled for the repository"
 }
+
+func HasDependencyManagementPolicy(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	payload, message := VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if len(payload.Insights.Repository.Documentation.DependencyManagement) > 0 {
+		return layer4.Passed, "Found dependency management policy in documentation"
+	}
+
+	return layer4.Failed, "No dependency management file found"
+}

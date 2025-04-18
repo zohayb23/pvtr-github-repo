@@ -6,8 +6,8 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/magiconair/properties/assert"
 	"github.com/rhysd/actionlint"
+	"github.com/stretchr/testify/assert"
 )
 
 
