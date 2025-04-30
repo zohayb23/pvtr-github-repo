@@ -86,7 +86,7 @@ type GraphqlRepoData struct {
 		}
 		ContributingGuidelines struct {
 			Body         string
-			ResourcePath githubv4.URI
+			ResourcePath string
 		}
 		DependencyGraphManifests struct {
 			TotalCount int
