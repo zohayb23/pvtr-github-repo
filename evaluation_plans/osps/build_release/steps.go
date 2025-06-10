@@ -14,8 +14,8 @@ import (
 )
 
 // https://securitylab.github.com/resources/github-actions-untrusted-input/
-// List of untrusted inputs
-var regex = `.*(github\.event\.issue\.title|` +
+// List of untrusted inputs; Global for use in tests also
+var untrustedVarsRegex = `.*(github\.event\.issue\.title|` +
 	`github\.event\.issue\.body|` +
 	`github\.event\.pull_request\.title|` +
 	`github\.event\.pull_request\.body|` +
@@ -50,6 +50,9 @@ func cicdSanitizedInputParameters(payloadData interface{}, _ map[string]*layer4.
 	}
 
 	for _, file := range workflows {
+		if !strings.HasSuffix(*file.Name, ".yml") && !strings.HasSuffix(*file.Name, ".yaml") {
+			continue
+		}
 
 		if *file.Encoding != "base64" {
 			return layer4.Failed, fmt.Sprintf("File %v is not base64 encoded", file.Name)
@@ -62,7 +65,7 @@ func cicdSanitizedInputParameters(payloadData interface{}, _ map[string]*layer4.
 
 		workflow, actionError := actionlint.Parse(decoded)
 		if actionError != nil {
-			return layer4.Failed, fmt.Sprintf("Error parsing workflow: %v", actionError)
+			return layer4.Failed, fmt.Sprintf("Error parsing workflow: %v (%s)", actionError, *file.Path)
 		}
 
 		// Check the workflow for untrusted inputs
@@ -73,13 +76,13 @@ func cicdSanitizedInputParameters(payloadData interface{}, _ map[string]*layer4.
 		}
 	}
 
-	return layer4.Passed, "GitHub Workflows inputs are sanitized"
+	return layer4.Passed, "GitHub Workflows variables do not contain untrusted inputs"
 
 }
 
 func checkWorkflowFileForUntrustedInputs(workflow *actionlint.Workflow) (bool, string) {
 
-	expression, _ := regexp.Compile(regex)
+	untrustedVars, _ := regexp.Compile(untrustedVarsRegex)
 	var message strings.Builder
 
 	for _, job := range workflow.Jobs {
@@ -104,7 +107,7 @@ func checkWorkflowFileForUntrustedInputs(workflow *actionlint.Workflow) (bool, s
 			varList := pullVariablesFromScript(run.Run.Value)
 
 			for _, name := range varList {
-				if expression.Match([]byte(name)) {
+				if untrustedVars.Match([]byte(name)) {
 					message.WriteString(fmt.Sprintf("Untrusted input found: %v\n", name))
 				}
 			}
