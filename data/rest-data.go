@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 
@@ -343,27 +342,19 @@ func (r *RestData) GetRulesets(branchName string) []Ruleset {
 }
 
 func (r *RestData) IsCodeRepo() (bool, error) {
-	//debug.PrintStack()                                                            // Print trace stack for debugging purposes
-	endpoint := fmt.Sprintf("%s/repos/%s/%s/languages", APIBase, r.owner, r.repo) // prints the language  endpoint
-	responseData, err := r.MakeApiCall(endpoint, true)                            // Makes the API Call and stores it into response data
+	endpoint := fmt.Sprintf("%s/repos/%s/%s/languages", APIBase, r.owner, r.repo)
+	responseData, err := r.MakeApiCall(endpoint, true)
 	if err != nil {
 		return true, err
 	}
-	languages := make(map[string]int) // languages is map of [string]int
-	//{
-	//   "C": 78769,
-	//   "Python": 7769
-	// }
+	languagesUsed := make(map[string]int)
 
-	json.Unmarshal(responseData, &languages) //decoding(Unmarshal) response data to languages in a JSON format
+	json.Unmarshal(responseData, &languagesUsed)
 
-	// if languages contains/ does not contain a map with a [string]int
-	// return false/true with an error
-	log.Printf("Languages found in repo:%v,%v", languages, len(languages))
-	if len(languages) == 0 {
+	r.Config.Logger.Trace(fmt.Sprintf("%v Languages found in repo: %v", len(languagesUsed), languagesUsed))
+	if len(languagesUsed) == 0 {
 		return false, nil
 	}
 
 	return true, nil
-
 }
