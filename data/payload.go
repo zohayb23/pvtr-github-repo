@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/google/go-github/v71/github"
 	"github.com/privateerproj/privateer-sdk/config"
@@ -22,13 +23,20 @@ type Payload struct {
 }
 
 func Loader(config *config.Config) (payload interface{}, err error) {
-	graphql, client, err := getGraphqlRepoData(config)
+	graphql, client, err := getGraphqlRepoData(config) // API Call for GraphqlRepoData, gets general info for repos
 	if err != nil {
 		return nil, err
 	}
+
 	ghClient := github.NewClient(oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: config.GetString("token")},
 	)))
+
+	rest, err := getRestData(ghClient, config)
+	if err != nil {
+		return nil, err
+	}
+
 	repositoryMetadata, err := loadRepositoryMetadata(ghClient, config.GetString("owner"), config.GetString("repo"))
 	if err != nil {
 		return nil, err
@@ -39,16 +47,22 @@ func Loader(config *config.Config) (payload interface{}, err error) {
 		return nil, err
 	}
 
-	rest, err := getRestData(ghClient, config)
-	if err != nil {
-		return nil, err
-	}
+	// rest, err := getRestData(ghClient, config)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	//Add
+	isCodeRepo, _ := rest.IsCodeRepo()
+	log.Printf("Is this a Code Repo with Languages in it? %v", isCodeRepo)
+	//os.Exit(0)
+
 	return interface{}(Payload{
 		GraphqlRepoData:          graphql,
 		RestData:                 rest,
 		Config:                   config,
 		RepositoryMetadata:       repositoryMetadata,
-		DependencyManifestsCount: dependencyManifestsCount,
+		DependencyManifestsCount: dependencyManifestsCount, //Breaks if too many manifests
 		client:                   client,
 	}), nil
 }
