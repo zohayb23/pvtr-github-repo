@@ -8,7 +8,7 @@ import (
 	"github.com/revanite-io/pvtr-github-repo/evaluation_plans/reusable_steps"
 )
 
-func hasSecContact(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+func hasSecContact(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
@@ -31,7 +31,7 @@ func hasSecContact(payloadData interface{}, _ map[string]*layer4.Change) (result
 	return layer4.Failed, "Security contacts were not specified in Security Insights data"
 }
 
-func sastToolDefined(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+func sastToolDefined(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
