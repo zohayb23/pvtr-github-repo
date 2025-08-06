@@ -56,8 +56,8 @@ func Loader(config *config.Config) (payload interface{}, err error) {
 		Config:                   config,
 		RepositoryMetadata:       repositoryMetadata,
 		DependencyManifestsCount: dependencyManifestsCount,
-		client:                   client,
 		IsCodeRepo:               isCodeRepo,
+		client:                   client,
 	}), nil
 }
 
