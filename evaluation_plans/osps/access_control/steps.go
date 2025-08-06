@@ -1,8 +1,6 @@
 package access_control
 
 import (
-	"fmt"
-
 	"github.com/revanite-io/sci/pkg/layer4"
 
 	"github.com/revanite-io/pvtr-github-repo/evaluation_plans/reusable_steps"
@@ -29,11 +27,7 @@ func branchProtectionRestrictsPushes(payloadData interface{}, _ map[string]*laye
 	if message != "" {
 		return layer4.Unknown, message
 	}
-	isCode, err := payload.RestData.IsCodeRepo()
-	if err != nil {
-		return layer4.Unknown, fmt.Sprintf("Failed to check if repo is code: %v", err)
-	}
-	if !isCode {
+	if !payload.IsCodeRepo {
 		return layer4.NotApplicable, "Repository contains no code - skipping branch protection checks"
 	}
 	protectionData := payload.Repository.DefaultBranchRef.BranchProtectionRule

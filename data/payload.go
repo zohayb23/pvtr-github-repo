@@ -3,7 +3,6 @@ package data
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/google/go-github/v71/github"
 	"github.com/privateerproj/privateer-sdk/config"
@@ -18,8 +17,8 @@ type Payload struct {
 	SuspectedBinaries        []string
 	RepositoryMetadata       RepositoryMetadata
 	DependencyManifestsCount int
-
-	client *githubv4.Client
+	IsCodeRepo               bool
+	client                   *githubv4.Client
 }
 
 func Loader(config *config.Config) (payload interface{}, err error) {
@@ -46,9 +45,10 @@ func Loader(config *config.Config) (payload interface{}, err error) {
 	if err != nil {
 		return nil, err
 	}
-
-	isCodeRepo, _ := rest.IsCodeRepo()
-	log.Printf("Is this a Code Repo with Languages in it? %v", isCodeRepo)
+	isCodeRepo, err := rest.IsCodeRepo()
+	if err != nil {
+		return nil, err
+	}
 
 	return interface{}(Payload{
 		GraphqlRepoData:          graphql,
@@ -57,6 +57,7 @@ func Loader(config *config.Config) (payload interface{}, err error) {
 		RepositoryMetadata:       repositoryMetadata,
 		DependencyManifestsCount: dependencyManifestsCount,
 		client:                   client,
+		IsCodeRepo:               isCodeRepo,
 	}), nil
 }
 
