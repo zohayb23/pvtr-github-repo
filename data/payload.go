@@ -19,7 +19,7 @@ type Payload struct {
 	DependencyManifestsCount int
 	IsCodeRepo               bool
 
-	client                   *githubv4.Client
+	client *githubv4.Client
 }
 
 func Loader(config *config.Config) (payload interface{}, err error) {
@@ -32,11 +32,6 @@ func Loader(config *config.Config) (payload interface{}, err error) {
 		&oauth2.Token{AccessToken: config.GetString("token")},
 	)))
 
-	rest, err := getRestData(ghClient, config)
-	if err != nil {
-		return nil, err
-	}
-
 	repositoryMetadata, err := loadRepositoryMetadata(ghClient, config.GetString("owner"), config.GetString("repo"))
 	if err != nil {
 		return nil, err
@@ -46,6 +41,12 @@ func Loader(config *config.Config) (payload interface{}, err error) {
 	if err != nil {
 		return nil, err
 	}
+
+	rest, err := getRestData(ghClient, config)
+	if err != nil {
+		return nil, err
+	}
+
 	isCodeRepo, err := rest.IsCodeRepo()
 	if err != nil {
 		return nil, err
