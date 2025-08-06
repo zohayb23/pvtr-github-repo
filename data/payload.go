@@ -18,6 +18,7 @@ type Payload struct {
 	RepositoryMetadata       RepositoryMetadata
 	DependencyManifestsCount int
 	IsCodeRepo               bool
+
 	client                   *githubv4.Client
 }
 
