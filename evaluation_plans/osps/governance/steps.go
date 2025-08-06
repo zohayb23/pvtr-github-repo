@@ -71,7 +71,7 @@ func hasContributionReviewPolicy(payloadData interface{}, _ map[string]*layer4.C
 		return layer4.Unknown, message
 	}
 	if !data.IsCodeRepo {
-		return layer4.NotApplicable, "Repository contains no code - skipping governance checks"
+		return layer4.NotApplicable, "Repository contains no code - skipping code contribution policy check"
 	}
 	if data.Insights.Repository.Documentation.ReviewPolicy != "" {
 		return layer4.Passed, "Code review guide was specified in Security Insights data"
