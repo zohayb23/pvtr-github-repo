@@ -33,7 +33,7 @@ var untrustedVarsRegex = `.*(github\.event\.issue\.title|` +
 	`github\.event\.pull_request\.head\.repo\.default_branch|` +
 	`github\.head_ref).*`
 
-func cicdSanitizedInputParameters(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+func cicdSanitizedInputParameters(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 
 	// parse the payload and see if we pass our checks
 	data, message := reusable_steps.VerifyPayload(payloadData)
@@ -155,7 +155,7 @@ func pullVariablesFromScript(script string) []string {
 
 }
 
-func releaseHasUniqueIdentifier(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+func releaseHasUniqueIdentifier(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
@@ -233,7 +233,7 @@ func insecureURI(uri string) bool {
 	return true
 }
 
-func ensureInsightsLinksUseHTTPS(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+func ensureInsightsLinksUseHTTPS(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
@@ -252,7 +252,7 @@ func ensureInsightsLinksUseHTTPS(payloadData interface{}, _ map[string]*layer4.C
 	return layer4.Passed, "All links use HTTPS"
 }
 
-func ensureLatestReleaseHasChangelog(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+func ensureLatestReleaseHasChangelog(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
@@ -265,7 +265,7 @@ func ensureLatestReleaseHasChangelog(payloadData interface{}, _ map[string]*laye
 	return layer4.Failed, "The latest release does not have mention of a changelog: \n" + releaseDescription
 }
 
-func insightsHasSlsaAttestation(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+func insightsHasSlsaAttestation(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
@@ -281,7 +281,7 @@ func insightsHasSlsaAttestation(payloadData interface{}, _ map[string]*layer4.Ch
 	return layer4.Failed, "No SLSA attestation found in security insights"
 }
 
-func distributionPointsUseHTTPS(payloadData interface{}, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+func distributionPointsUseHTTPS(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
