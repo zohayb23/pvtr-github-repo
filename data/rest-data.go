@@ -349,7 +349,10 @@ func (r *RestData) IsCodeRepo() (bool, error) {
 	}
 	languagesUsed := make(map[string]int)
 
-	json.Unmarshal(responseData, &languagesUsed)
+	err = json.Unmarshal(responseData, &languagesUsed)
+	if err != nil {
+		return true, err
+	}
 
 	r.Config.Logger.Trace(fmt.Sprintf("%v Languages found in repo: %v", len(languagesUsed), languagesUsed))
 	if len(languagesUsed) == 0 {
