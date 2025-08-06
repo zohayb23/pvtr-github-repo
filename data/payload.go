@@ -17,6 +17,7 @@ type Payload struct {
 	SuspectedBinaries        []string
 	RepositoryMetadata       RepositoryMetadata
 	DependencyManifestsCount int
+	IsCodeRepo               bool
 
 	client *githubv4.Client
 }
@@ -26,9 +27,11 @@ func Loader(config *config.Config) (payload interface{}, err error) {
 	if err != nil {
 		return nil, err
 	}
+
 	ghClient := github.NewClient(oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: config.GetString("token")},
 	)))
+
 	repositoryMetadata, err := loadRepositoryMetadata(ghClient, config.GetString("owner"), config.GetString("repo"))
 	if err != nil {
 		return nil, err
@@ -43,12 +46,19 @@ func Loader(config *config.Config) (payload interface{}, err error) {
 	if err != nil {
 		return nil, err
 	}
+
+	isCodeRepo, err := rest.IsCodeRepo()
+	if err != nil {
+		return nil, err
+	}
+
 	return interface{}(Payload{
 		GraphqlRepoData:          graphql,
 		RestData:                 rest,
 		Config:                   config,
 		RepositoryMetadata:       repositoryMetadata,
 		DependencyManifestsCount: dependencyManifestsCount,
+		IsCodeRepo:               isCodeRepo,
 		client:                   client,
 	}), nil
 }

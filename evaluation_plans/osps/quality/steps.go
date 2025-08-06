@@ -24,7 +24,9 @@ func insightsListsRepositories(payloadData interface{}, _ map[string]*layer4.Cha
 	if message != "" {
 		return layer4.Unknown, message
 	}
-
+	if !data.IsCodeRepo {
+		return layer4.NotApplicable, "Repository contains no code - skipping QA checks"
+	}
 	if len(data.Insights.Project.Repositories) > 0 {
 		return layer4.Passed, "Insights contains a list of repositories"
 	}
@@ -172,6 +174,9 @@ func hasOneOrMoreStatusChecks(payloadData interface{}, _ map[string]*layer4.Chan
 	if message != "" {
 		return layer4.Unknown, message
 	}
+	if !data.IsCodeRepo {
+		return layer4.NotApplicable, "Repository contains no code - skipping QA checks"
+	}
 
 	// get the name of all status checks that were run
 	var statusChecks []string
@@ -195,7 +200,9 @@ func verifyDependencyManagement(payloadData interface{}, _ map[string]*layer4.Ch
 	if message != "" {
 		return layer4.Unknown, message
 	}
-
+	if !data.IsCodeRepo {
+		return layer4.NotApplicable, "Repository contains no code - skipping QA checks"
+	}
 	// Validate required fields
 	if data.Repository.Name == "" || data.Repository.DefaultBranchRef.Name == "" ||
 		data.Repository.DefaultBranchRef.Target.OID == "" {
@@ -225,6 +232,7 @@ func documentsTestExecution(payloadData interface{}, _ map[string]*layer4.Change
 	if message != "" {
 		return layer4.Unknown, message
 	}
+	
 	return layer4.NeedsReview, "Review project documentation to ensure it explains when and how tests are run"
 }
 
