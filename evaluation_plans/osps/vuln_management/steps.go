@@ -13,9 +13,6 @@ func hasSecContact(payloadData interface{}, _ map[string]*layer4.Change) (result
 	if message != "" {
 		return layer4.Unknown, message
 	}
-	if !data.IsCodeRepo {
-		return layer4.NotApplicable, "Repository contains no code - skipping vulnerability management checks"
-	}
 
 	// TODO: Check for a contact email in SECURITY.md
 

@@ -113,6 +113,7 @@ func OSPS_QA_04() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
+			reusable_steps.IsCodeRepo,
 			reusable_steps.HasSecurityInsightsFile,
 			reusable_steps.IsActive,
 			insightsListsRepositories,
@@ -172,6 +173,7 @@ func OSPS_QA_06() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
+			reusable_steps.IsCodeRepo,
 			hasOneOrMoreStatusChecks,
 		},
 	)
@@ -183,6 +185,7 @@ func OSPS_QA_06() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
+			reusable_steps.IsCodeRepo,
 			documentsTestExecution,
 		},
 	)
@@ -194,6 +197,7 @@ func OSPS_QA_06() (evaluation *layer4.ControlEvaluation) {
 			"Maturity Level 3",
 		},
 		[]layer4.AssessmentStep{
+			reusable_steps.IsCodeRepo,
 			documentsTestMaintenancePolicy,
 		},
 	)
