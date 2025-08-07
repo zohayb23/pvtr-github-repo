@@ -22,8 +22,8 @@ type Payload struct {
 	client *githubv4.Client
 }
 
-func Loader(config *config.Config) (payload interface{}, err error) {
-	graphql, client, err := getGraphqlRepoData(config)
+func Loader(config *config.Config) (payload any, err error) {
+	graphql, client, err := getGraphqlRepoData(config) // API Call for GraphqlRepoData, gets general info for repos
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func Loader(config *config.Config) (payload interface{}, err error) {
 		return nil, err
 	}
 
-	return interface{}(Payload{
+	return any(Payload{
 		GraphqlRepoData:          graphql,
 		RestData:                 rest,
 		Config:                   config,
@@ -70,7 +70,7 @@ func getGraphqlRepoData(config *config.Config) (data *GraphqlRepoData, client *g
 	httpClient := oauth2.NewClient(context.Background(), src)
 	client = githubv4.NewClient(httpClient)
 
-	variables := map[string]interface{}{
+	variables := map[string]any{
 		"owner": githubv4.String(config.GetString("owner")),
 		"name":  githubv4.String(config.GetString("repo")),
 	}
