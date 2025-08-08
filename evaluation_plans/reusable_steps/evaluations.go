@@ -104,3 +104,16 @@ func HasDependencyManagementPolicy(payloadData any, _ map[string]*layer4.Change)
 
 	return layer4.Failed, "No dependency management file found"
 }
+
+func IsCodeRepo(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	payload, message := VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if !payload.IsCodeRepo {
+		return layer4.NotApplicable, "Repository does not contain code"
+	}
+
+	return layer4.Passed, "Repository contains code"
+}
