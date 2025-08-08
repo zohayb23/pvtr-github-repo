@@ -24,9 +24,7 @@ func insightsListsRepositories(payloadData any, _ map[string]*layer4.Change) (re
 	if message != "" {
 		return layer4.Unknown, message
 	}
-	if !data.IsCodeRepo {
-		return layer4.NotApplicable, "Repository contains no code - skipping QA checks"
-	}
+	
 	if len(data.Insights.Project.Repositories) > 0 {
 		return layer4.Passed, "Insights contains a list of repositories"
 	}
@@ -174,9 +172,6 @@ func hasOneOrMoreStatusChecks(payloadData any, _ map[string]*layer4.Change) (res
 	if message != "" {
 		return layer4.Unknown, message
 	}
-	if !data.IsCodeRepo {
-		return layer4.NotApplicable, "Repository contains no code - skipping QA checks"
-	}
 
 	// get the name of all status checks that were run
 	var statusChecks []string
@@ -200,9 +195,7 @@ func verifyDependencyManagement(payloadData any, _ map[string]*layer4.Change) (r
 	if message != "" {
 		return layer4.Unknown, message
 	}
-	if !data.IsCodeRepo {
-		return layer4.NotApplicable, "Repository contains no code - skipping QA checks"
-	}
+	
 	// Validate required fields
 	if data.Repository.Name == "" || data.Repository.DefaultBranchRef.Name == "" ||
 		data.Repository.DefaultBranchRef.Target.OID == "" {
