@@ -1,22 +1,21 @@
 package data
 
 import (
-	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/google/go-github/v71/github"
+	"github.com/migueleliasweb/go-github-mock/src/mock"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCheckFile(t *testing.T) {
 	tests := []struct {
-		name      string 
-		filename  string 
-		toplevel  []*github.RepositoryContent 	
-		githubDir []*github.RepositoryContent 
-		expected  string 
+		name      string
+		filename  string
+		toplevel  []*github.RepositoryContent
+		githubDir []*github.RepositoryContent
+		expected  string
 	}{
 		{
 			name:     "finds support.md in root",
@@ -37,7 +36,7 @@ func TestCheckFile(t *testing.T) {
 			githubDir: []*github.RepositoryContent{},
 			expected:  "readme.md",
 		},
-		{ 
+		{
 			name:     "case insensitive match",
 			filename: "readme.md",
 			toplevel: []*github.RepositoryContent{
@@ -46,7 +45,7 @@ func TestCheckFile(t *testing.T) {
 			githubDir: []*github.RepositoryContent{},
 			expected:  "README.md",
 		},
-		{ 
+		{
 			name:     "finds support.md in .github",
 			filename: "support.md",
 			toplevel: []*github.RepositoryContent{},
@@ -66,25 +65,25 @@ func TestCheckFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			rest := &RestData{ 
-				contents: RepoContent{  
+			rest := &RestData{
+				contents: RepoContent{
 					Content: tt.toplevel,
-					SubContent: map[string]RepoContent{ 
+					SubContent: map[string]RepoContent{
 						".github": {Content: tt.githubDir},
 					},
 				},
 			}
 			result := rest.checkFile(tt.filename)
-			assert.Equal(t, tt.expected, result) 
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
 
-func TestGetSubdirContentByPath(t *testing.T) {  
-	subContent := RepoContent{ 
-		Content: []*github.RepositoryContent{  
-			{Name: github.Ptr("workflow.yaml"), 
-			Type: github.Ptr("file"), 
+func TestGetSubdirContentByPath(t *testing.T) {
+	subContent := RepoContent{
+		Content: []*github.RepositoryContent{
+			{Name: github.Ptr("workflow.yaml"),
+			Type: github.Ptr("file"),
 			Path: github.Ptr(".github/workflows/workflow.yaml")},
 		},
 	}
@@ -125,82 +124,59 @@ func TestGetSubdirContentByPath(t *testing.T) {
 	})
 }
 func TestIsCodeRepo(t *testing.T) {
-
 	tests := []struct {
-		name           string            
-		apiResponse    map[string]int    
-		apiError       error             
-		expectedResult bool              
-		expectedError  bool              
+		name           string
+		responses      []mock.MockBackendOption
+		expectedResult bool
+		expectedError  bool
 	}{
 		{
-			name:           "repository with code languages",
-			apiResponse:    map[string]int{"Go": 1000, "JavaScript": 500}, 
-			apiError:       nil,                                             
-			expectedResult: true,                                            
-			expectedError:  false,                                           
+			name: "repository with code languages",
+			responses: []mock.MockBackendOption{
+				mock.WithRequestMatch(
+					mock.GetReposLanguagesByOwnerByRepo,
+					map[string]int{"Go": 1000, "JavaScript": 500},
+				),
+			},
+			expectedResult: true,
+			expectedError:  false,
 		},
 		{
-			name:           "repository with no languages",
-			apiResponse:    map[string]int{},                                
-			apiError:       nil,                                             
-			expectedResult: false,                                           
-			expectedError:  false,                                           
+			name: "repository with no languages",
+			responses: []mock.MockBackendOption{
+				mock.WithRequestMatch(
+					mock.GetReposLanguagesByOwnerByRepo,
+					map[string]int{},
+				),
+			},
+			expectedResult: false,
+			expectedError:  false,
 		},
 		{
-			name:           "api error should return true with error",
-			apiResponse:    nil,                                             
-			apiError:       fmt.Errorf("API rate limit exceeded"),           
-			expectedResult: true,                                            
-			expectedError:  true,                                            
+			name:           "api error",
+			responses:      []mock.MockBackendOption{},
+			expectedResult: true,
+			expectedError:  true,
 		},
 	}
 
-	for _, tt := range tests { 
-		t.Run(tt.name, func(t *testing.T) {
-	
-			var responseData []byte
-			var apiErr error
-			
-			if tt.apiError != nil {
-				apiErr = tt.apiError
-			} else if tt.apiResponse != nil {
-				jsonBytes, err := json.Marshal(tt.apiResponse)
-				if err != nil {
-					t.Fatalf("Failed to marshal test response: %v", err)
-				}
-				responseData = jsonBytes
-			} else {
-				responseData = []byte(`{}`)
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			mockClient := mock.NewMockedHTTPClient(
+				testCase.responses...,
+			)
+			ghClient := github.NewClient(mockClient)
+			rest := &RestData{
+				ghClient: ghClient,
+				owner:    "test-owner",
+				repo:     "test-repo",
 			}
-			
-			var result bool
-			var resultErr error
-			
-			if apiErr != nil {
-				result = true
-				resultErr = apiErr
+			result, err := rest.IsCodeRepo()
+			assert.Equal(t, testCase.expectedResult, result)
+			if testCase.expectedError {
+				assert.Error(t, err)
 			} else {
-				languagesUsed := make(map[string]int)
-				err := json.Unmarshal(responseData, &languagesUsed)
-				
-				if err != nil {
-					result = true
-					resultErr = err
-				} else if len(languagesUsed) == 0 {
-					result = false
-					resultErr = nil
-				} else {
-					result = true
-					resultErr = nil
-				}
-			}
-			
-			assert.Equal(t, tt.expectedResult, result)
-			if tt.expectedError {
-				assert.Error(t, resultErr)
-			} else {
-				assert.NoError(t, resultErr)
+				assert.NoError(t, err)
 			}
 		})
 	}

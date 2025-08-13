@@ -75,16 +75,16 @@ func (r *RestData) Setup() error {
 }
 
 func (r *RestData) MakeApiCall(endpoint string, isGithub bool) (body []byte, err error) {
-	r.Config.Logger.Trace(fmt.Sprintf("GET %s", endpoint))
-	request, err := http.NewRequest("GET", endpoint, nil)
+	r.Config.Logger.Trace(fmt.Sprintf("GET %s", endpoint)) // this logs the endpoint being called
+	request, err := http.NewRequest("GET", endpoint, nil)  // this creates a new request to the endpoint
 	if err != nil {
 		return nil, err
 	}
-	if isGithub {
+	if isGithub { // this sets the authorization header if the request is to github
 		request.Header.Set("Authorization", "Bearer "+r.token)
 	}
-	client := &http.Client{}
-	response, err := client.Do(request)
+	client := &http.Client{}            // this creates a new http client
+	response, err := client.Do(request) // this sends the request to the endpoint
 	if err != nil {
 		err = fmt.Errorf("error making http call: %s", err.Error())
 		return nil, err
@@ -93,7 +93,7 @@ func (r *RestData) MakeApiCall(endpoint string, isGithub bool) (body []byte, err
 		err = fmt.Errorf("unexpected response: %s", response.Status)
 		return nil, err
 	}
-	return io.ReadAll(response.Body)
+	return io.ReadAll(response.Body) // this reads the response body
 }
 
 func (r *RestData) getSourceFile(owner, repo, path string) (content *github.RepositoryContent, err error) {
@@ -342,20 +342,13 @@ func (r *RestData) GetRulesets(branchName string) []Ruleset {
 }
 
 func (r *RestData) IsCodeRepo() (bool, error) {
-	endpoint := fmt.Sprintf("%s/repos/%s/%s/languages", APIBase, r.owner, r.repo)
-	responseData, err := r.MakeApiCall(endpoint, true)
-	if err != nil {
-		return true, err
-	}
-	languagesUsed := make(map[string]int)
 
-	err = json.Unmarshal(responseData, &languagesUsed)
+	languages, _, err := r.ghClient.Repositories.ListLanguages(context.Background(), r.owner, r.repo)
 	if err != nil {
 		return true, err
 	}
 
-	r.Config.Logger.Trace(fmt.Sprintf("%v Languages found in repo: %v", len(languagesUsed), languagesUsed))
-	if len(languagesUsed) == 0 {
+	if len(languages) == 0 {
 		return false, nil
 	}
 
