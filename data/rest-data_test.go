@@ -1,6 +1,7 @@
 package data
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/google/go-github/v71/github"
@@ -150,9 +151,16 @@ func TestIsCodeRepo(t *testing.T) {
 			expectedError:  false,
 		},
 		{
-			name:           "api error",
-			responses:      []mock.MockBackendOption{},
-			expectedResult: true,
+			name: "api error",
+			responses: []mock.MockBackendOption{
+				mock.WithRequestMatchHandler(
+					mock.GetReposLanguagesByOwnerByRepo,
+					http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						mock.WriteError(w, http.StatusInternalServerError, "github went belly up or something")
+					}),
+				),
+			},
+			expectedResult: false,
 			expectedError:  true,
 		},
 	}
