@@ -10,8 +10,7 @@ import (
 
 func OSPS_DO_01() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		ControlID:        "OSPS-DO-01",
-		RemediationGuide: "",
+		ControlID: "OSPS-DO-01",
 	}
 
 	evaluation.AddAssessment(
@@ -34,8 +33,7 @@ func OSPS_DO_01() (evaluation *layer4.ControlEvaluation) {
 
 func OSPS_DO_02() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		ControlID:        "OSPS-DO-02",
-		RemediationGuide: "",
+		ControlID: "OSPS-DO-02",
 	}
 
 	evaluation.AddAssessment(
@@ -58,8 +56,7 @@ func OSPS_DO_02() (evaluation *layer4.ControlEvaluation) {
 
 func OSPS_DO_03() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		ControlID:        "OSPS-DO-03",
-		RemediationGuide: "",
+		ControlID: "OSPS-DO-03",
 	}
 
 	evaluation.AddAssessment(
@@ -93,8 +90,7 @@ func OSPS_DO_03() (evaluation *layer4.ControlEvaluation) {
 
 func OSPS_DO_04() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		ControlID:        "OSPS-DO-04",
-		RemediationGuide: "",
+		ControlID: "OSPS-DO-04",
 	}
 
 	evaluation.AddAssessment(
@@ -113,8 +109,7 @@ func OSPS_DO_04() (evaluation *layer4.ControlEvaluation) {
 
 func OSPS_DO_05() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		ControlID:        "OSPS-DO-05",
-		RemediationGuide: "",
+		ControlID: "OSPS-DO-05",
 	}
 
 	evaluation.AddAssessment(
@@ -133,8 +128,7 @@ func OSPS_DO_05() (evaluation *layer4.ControlEvaluation) {
 
 func OSPS_DO_06() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		ControlID:        "OSPS-DO-06",
-		RemediationGuide: "",
+		ControlID: "OSPS-DO-06",
 	}
 
 	evaluation.AddAssessment(
