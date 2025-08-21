@@ -1,6 +1,6 @@
 # Privateer Plugin for GitHub Repositories
 
-This plugin is designed to test a GitHub repository using automated assessments compatible with the [Simplified Compliance Infrastructure](https://github.com/ossf/gemara) Layer 4 data types.
+This plugin is designed to test a GitHub repository using automated assessments compatible with the [Gemara](https://github.com/ossf/gemara) Layer 4 data types.
 
 Many of the assessments require a [Security Insights](https://github.com/ossf/security-insights) file to be present at the root of the repository, or `./github/security-insights.yml`.
 
