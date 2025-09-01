@@ -66,10 +66,14 @@ func TestReader_GetAssessmentById(t *testing.T) {
 
 	reader := NewReader()
 
-	_, err := reader.GetAssessmentRequirementById("OSPS-AC-02.01")
+	req, err := reader.GetAssessmentRequirementById("OSPS-AC-02.01")
 	if err != nil {
-		t.Errorf("GetAssessmentRequirementById returned an error: %s", err)
+		t.Errorf("Failed to get assessment requirement: %v", err)
 	}
+	if req == nil {
+		t.Error("Assessment requirement is nil")
+	}
+
 }
 
 func TestBuildAssessmentRequirementMap(t *testing.T) {
