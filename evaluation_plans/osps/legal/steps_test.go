@@ -8,9 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// FakeGraphqlRepo provides a minimal implementation of GraphqlRepoData
-// for testing OSPS-LE-03.02 license verification. It only includes
-// the LicenseInfo structure needed for license URL verification.
+
 type FakeGraphqlRepo struct {
 	Repository struct {
 		LicenseInfo struct {
@@ -19,12 +17,9 @@ type FakeGraphqlRepo struct {
 	}
 }
 
-// stubGraphqlRepo creates a GraphqlRepoData instance with a specified license URL.
-// This helper function is used to test the successful case of license verification
-// where both releases and a valid license exist.
 func stubGraphqlRepo(licenseUrl string) *data.GraphqlRepoData {
 	repo := &data.GraphqlRepoData{}
-	repo.Repository.LicenseInfo.Url = licenseUrl // Set the license URL
+	repo.Repository.LicenseInfo.Url = licenseUrl 
 	return repo
 }
 
@@ -60,7 +55,6 @@ func TestReleasesLicensed(t *testing.T) {
 			expectedResult:  layer4.Failed,
 			expectedMessage: "License was not found in a well known location via the GitHub API",
 		},
-		//Added test case for when the license and releases are found
 		{
 			name: "Has releases and license",
 			payloadData: data.Payload{
