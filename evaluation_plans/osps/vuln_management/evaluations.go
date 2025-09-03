@@ -1,8 +1,8 @@
 package vuln_management
 
 import (
+	"github.com/ossf/gemara/layer4"
 	"github.com/revanite-io/pvtr-github-repo/evaluation_plans/reusable_steps"
-	"github.com/revanite-io/sci/pkg/layer4"
 )
 
 //
@@ -10,8 +10,7 @@ import (
 
 func OSPS_VM_01() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		Control_Id:        "OSPS-VM-01",
-		Remediation_Guide: "",
+		ControlID: "OSPS-VM-01",
 	}
 
 	evaluation.AddAssessment(
@@ -31,8 +30,7 @@ func OSPS_VM_01() (evaluation *layer4.ControlEvaluation) {
 
 func OSPS_VM_02() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		Control_Id:        "OSPS-VM-02",
-		Remediation_Guide: "",
+		ControlID: "OSPS-VM-02",
 	}
 
 	evaluation.AddAssessment(
@@ -52,8 +50,7 @@ func OSPS_VM_02() (evaluation *layer4.ControlEvaluation) {
 
 func OSPS_VM_03() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		Control_Id:        "OSPS-VM-03",
-		Remediation_Guide: "",
+		ControlID: "OSPS-VM-03",
 	}
 
 	evaluation.AddAssessment(
@@ -73,8 +70,7 @@ func OSPS_VM_03() (evaluation *layer4.ControlEvaluation) {
 
 func OSPS_VM_04() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		Control_Id:        "OSPS-VM-04",
-		Remediation_Guide: "",
+		ControlID: "OSPS-VM-04",
 	}
 
 	evaluation.AddAssessment(
@@ -105,8 +101,7 @@ func OSPS_VM_04() (evaluation *layer4.ControlEvaluation) {
 
 func OSPS_VM_05() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		Control_Id:        "OSPS-VM-05",
-		Remediation_Guide: "",
+		ControlID: "OSPS-VM-05",
 	}
 
 	evaluation.AddAssessment(
@@ -147,8 +142,7 @@ func OSPS_VM_05() (evaluation *layer4.ControlEvaluation) {
 
 func OSPS_VM_06() (evaluation *layer4.ControlEvaluation) {
 	evaluation = &layer4.ControlEvaluation{
-		Control_Id:        "OSPS-VM-06",
-		Remediation_Guide: "",
+		ControlID: "OSPS-VM-06",
 	}
 
 	evaluation.AddAssessment(
