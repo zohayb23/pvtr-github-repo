@@ -1,7 +1,6 @@
 package legal
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -129,7 +128,8 @@ func TestGetLicenseList(t *testing.T) {
 				return []byte(test.mockResponse), nil
 			}
 
-			licenses, errString := testGetLicenseListLogic(mockMakeApiCall)
+			payload := data.Payload{}
+			licenses, errString := getLicenseList(payload, mockMakeApiCall)
 
 			assert.Equal(t, test.expectedError, errString)
 			if test.expectEmpty {
@@ -139,20 +139,4 @@ func TestGetLicenseList(t *testing.T) {
 			}
 		})
 	}
-}
-
-func testGetLicenseListLogic(makeApiCall func(string, bool) ([]byte, error)) (LicenseList, string) {
-	goodLicenseList := LicenseList{}
-	response, err := makeApiCall(spdxURL, false)
-	if err != nil {
-		return goodLicenseList, fmt.Sprintf("Failed to fetch good license data: %s", err.Error())
-	}
-	err = json.Unmarshal(response, &goodLicenseList)
-	if err != nil {
-		return goodLicenseList, fmt.Sprintf("Failed to unmarshal good license data: %s", err.Error())
-	}
-	if len(goodLicenseList.Licenses) == 0 {
-		return goodLicenseList, "Good license data was unexpectedly empty"
-	}
-	return goodLicenseList, ""
 }
