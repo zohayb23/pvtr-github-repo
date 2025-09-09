@@ -81,6 +81,7 @@ func TestReleasesLicensed(t *testing.T) {
 	}
 }
 
+
 func TestGetLicenseList(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -116,10 +117,10 @@ func TestGetLicenseList(t *testing.T) {
 			mockError:     nil,
 			expectedError: "Good license data was unexpectedly empty",
 			expectEmpty:   true,
-		},
+    },
 	}
-
-	for _, test := range tests {
+  
+  for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			mockMakeApiCall := func(endpoint string, isGithub bool) ([]byte, error) {
 				if test.mockError != nil {
@@ -137,6 +138,52 @@ func TestGetLicenseList(t *testing.T) {
 			} else {
 				assert.NotEmpty(t, licenses.Licenses)
 			}
+		})
+	}
+}
+      
+func TestSplitSpdxExpression(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected []string
+	}{
+		{
+			name:     "Single license",
+			input:    "MIT",
+			expected: []string{"MIT"},
+		},
+		{
+			name:     "Simple AND",
+			input:    "MIT AND Apache-2.0",
+			expected: []string{"MIT", "Apache-2.0"},
+		},
+		{
+			name:     "Simple OR",
+			input:    "MIT OR GPL-3.0",
+			expected: []string{"MIT", "GPL-3.0"},
+		},
+		{
+			name:     "Multiple AND",
+			input:    "MIT AND Apache-2.0 AND BSD-3-Clause",
+			expected: []string{"MIT", "Apache-2.0", "BSD-3-Clause"},
+		},
+		{
+			name:     "Mixed AND and OR",
+			input:    "MIT AND Apache-2.0 OR GPL-3.0",
+			expected: []string{"MIT", "Apache-2.0", "GPL-3.0"},
+		},
+		{
+			name:     "Empty string",
+			input:    "",
+			expected: []string{""},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result := splitSpdxExpression(test.input)
+			assert.Equal(t, test.expected, result)
 		})
 	}
 }
