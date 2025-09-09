@@ -23,9 +23,12 @@ type License struct {
 
 const spdxURL = "https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json"
 
-func getLicenseList(data data.Payload) (LicenseList, string) {
+func getLicenseList(data data.Payload, makeApiCall func(string, bool) ([]byte, error)) (LicenseList, string) {
 	goodLicenseList := LicenseList{}
-	response, err := data.MakeApiCall(spdxURL, false)
+	if makeApiCall == nil {
+		makeApiCall = data.MakeApiCall
+	}
+	response, err := makeApiCall(spdxURL, false)
 	if err != nil {
 		return goodLicenseList, fmt.Sprintf("Failed to fetch good license data: %s", err.Error())
 	}
@@ -80,7 +83,7 @@ func goodLicense(payloadData any, _ map[string]*layer4.Change) (result layer4.Re
 		return layer4.Unknown, message
 	}
 
-	licenses, errString := getLicenseList(data)
+	licenses, errString := getLicenseList(data, nil)
 	if errString != "" {
 		return layer4.Unknown, errString
 	}

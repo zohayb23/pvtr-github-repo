@@ -1,6 +1,7 @@
 package legal
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/ossf/gemara/layer4"
@@ -80,6 +81,67 @@ func TestReleasesLicensed(t *testing.T) {
 	}
 }
 
+
+func TestGetLicenseList(t *testing.T) {
+	tests := []struct {
+		name          string
+		mockResponse  string
+		mockError     error
+		expectedError string
+		expectEmpty   bool
+	}{
+		{
+			name:          "Successful Fetch and Parse",
+			mockResponse:  `{"licenses": [{"licenseId": "MIT", "isOsiApproved": true, "isFsfLibre": true}]}`,
+			mockError:     nil,
+			expectedError: "",
+			expectEmpty:   false,
+		},
+		{
+			name:          "Fetch Error",
+			mockResponse:  "",
+			mockError:     fmt.Errorf("fetch error"),
+			expectedError: "Failed to fetch good license data: fetch error",
+			expectEmpty:   true,
+		},
+		{
+			name:          "Parse Error",
+			mockResponse:  "invalid json",
+			mockError:     nil,
+			expectedError: "Failed to unmarshal good license data: invalid character 'i' looking for beginning of value",
+			expectEmpty:   true,
+		},
+		{
+			name:          "Empty License List",
+			mockResponse:  `{"licenses": []}`,
+			mockError:     nil,
+			expectedError: "Good license data was unexpectedly empty",
+			expectEmpty:   true,
+    },
+	}
+  
+  for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			mockMakeApiCall := func(endpoint string, isGithub bool) ([]byte, error) {
+				if test.mockError != nil {
+					return nil, test.mockError
+				}
+				return []byte(test.mockResponse), nil
+			}
+
+			payload := data.Payload{}
+			licenses, errString := getLicenseList(payload, mockMakeApiCall)
+
+			assert.Equal(t, test.expectedError, errString)
+			if test.expectEmpty {
+				assert.Empty(t, licenses.Licenses)
+			} else {
+				assert.NotEmpty(t, licenses.Licenses)
+			}
+		})
+	}
+}
+      
 func TestSplitSpdxExpression(t *testing.T) {
 	tests := []struct {
 		name     string
