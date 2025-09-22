@@ -71,3 +71,16 @@ func hasDependencyManagementPolicy(payloadData any, _ map[string]*layer4.Change)
 
 	return layer4.Passed, "Dependency management policy was specified in Security Insights data"
 }
+
+func hasIdentityVerificationGuide(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if data.Insights.Project.Documentation.SignatureVerification == "" {
+		return layer4.Failed, "Identity verification guide was NOT specified in Security Insights data (checked signature-verification field)"
+	}
+
+	return layer4.Passed, "Identity verification guide was specified in Security Insights data (found in signature-verification field)"
+}
