@@ -47,3 +47,16 @@ func sastToolDefined(payloadData interface{}, _ map[string]*layer4.Change) (resu
 
 	return layer4.Failed, "No Static Application Security Testing documented in Security Insights"
 }
+
+func hasVulnerabilityDisclosurePolicy(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if data.Insights.Project.Vulnerability.SecurityPolicy == "" {
+		return layer4.Failed, "Vulnerability disclosure policy was NOT specified in Security Insights data"
+	}
+
+	return layer4.Passed, "Vulnerability disclosure policy was specified in Security Insights data"
+}
