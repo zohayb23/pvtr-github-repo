@@ -1,7 +1,10 @@
 package legal
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"net/http"
 	"testing"
 
 	"github.com/ossf/gemara/layer4"
@@ -192,8 +195,8 @@ func TestGoodLicense(t *testing.T) {
 	tests := []struct {
 		name            string
 		payloadData     any
-		mockLicenses    LicenseList
-		mockError       string
+		apiResponse		 []byte
+		apiError        error
 		expectedResult  layer4.Result
 		expectedMessage string
 	}{
@@ -206,22 +209,17 @@ func TestGoodLicense(t *testing.T) {
 		{
 			name: "No license identifiers found",
 			payloadData: data.Payload{
-				RestData:        &data.RestData{},
 				GraphqlRepoData: &data.GraphqlRepoData{},
 				Config:          &config.Config{},
 			},
-			mockLicenses: LicenseList{
-				Licenses: []License{
-					{LicenseID: "MIT", IsOsiApproved: true, IsFsfLibre: false},
-				},
-			},
+			apiResponse: []byte(`{"licenses":[{"licenseId":"MIT","isOsiApproved":true,"isFsfLibre":false}]}`),
+			apiError: nil,
 			expectedResult:  layer4.Failed,
 			expectedMessage: "License SPDX identifier was not found in Security Insights data or via GitHub API",
 		},
 		{
 			name: "OSI approved license (MIT)",
 			payloadData: data.Payload{
-				RestData: &data.RestData{},
 				GraphqlRepoData: func() *data.GraphqlRepoData {
 					repo := stubGraphqlRepo("")
 					repo.Repository.LicenseInfo.SpdxId = "MIT"
@@ -229,18 +227,14 @@ func TestGoodLicense(t *testing.T) {
 				}(),
 				Config: &config.Config{},
 			},
-			mockLicenses: LicenseList{
-				Licenses: []License{
-					{LicenseID: "MIT", IsOsiApproved: true, IsFsfLibre: false},
-				},
-			},
+			apiResponse: []byte(`{"licenses":[{"licenseId":"MIT","isOsiApproved":true,"isFsfLibre":false}]}`),
+			apiError: nil,
 			expectedResult:  layer4.NeedsReview,
 			expectedMessage: "All license found are OSI or FSF approved",
 		},
 		{
 			name: "Non-approved license",
 			payloadData: data.Payload{
-				RestData: &data.RestData{},
 				GraphqlRepoData: func() *data.GraphqlRepoData {
 					repo := stubGraphqlRepo("")
 					repo.Repository.LicenseInfo.SpdxId = "BadLicense"
@@ -248,18 +242,14 @@ func TestGoodLicense(t *testing.T) {
 				}(),
 				Config: &config.Config{},
 			},
-			mockLicenses: LicenseList{
-				Licenses: []License{
-					{LicenseID: "BadLicense", IsOsiApproved: false, IsFsfLibre: false},
-				},
-			},
+			apiResponse: []byte(`{"licenses":[{"licenseId":"BadLicense","isOsiApproved":false,"isFsfLibre":false}]}`),
+			apiError: nil,
 			expectedResult:  layer4.Failed,
 			expectedMessage: "These licenses are not OSI or FSF approved: BadLicense",
 		},
 		{
 			name: "Multiple licenses with mixed approval",
 			payloadData: data.Payload{
-				RestData: &data.RestData{},
 				GraphqlRepoData: func() *data.GraphqlRepoData {
 					repo := stubGraphqlRepo("")
 					repo.Repository.LicenseInfo.SpdxId = "MIT AND BadLicense"
@@ -267,19 +257,14 @@ func TestGoodLicense(t *testing.T) {
 				}(),
 				Config: &config.Config{},
 			},
-			mockLicenses: LicenseList{
-				Licenses: []License{
-					{LicenseID: "MIT", IsOsiApproved: true, IsFsfLibre: false},
-					{LicenseID: "BadLicense", IsOsiApproved: false, IsFsfLibre: false},
-				},
-			},
+			apiResponse: []byte(`{"licenses":[{"licenseId":"MIT","isOsiApproved":true,"isFsfLibre":false},{"licenseId":"BadLicense","isOsiApproved":false,"isFsfLibre":false}]}`),
+			apiError: nil,
 			expectedResult:  layer4.Failed,
 			expectedMessage: "These licenses are not OSI or FSF approved: BadLicense",
 		},
 		{
 			name: "Unknown license ID",
 			payloadData: data.Payload{
-				RestData: &data.RestData{},
 				GraphqlRepoData: func() *data.GraphqlRepoData {
 					repo := stubGraphqlRepo("")
 					repo.Repository.LicenseInfo.SpdxId = "UnknownLicense"
@@ -287,11 +272,8 @@ func TestGoodLicense(t *testing.T) {
 				}(),
 				Config: &config.Config{},
 			},
-			mockLicenses: LicenseList{
-				Licenses: []License{
-					{LicenseID: "MIT", IsOsiApproved: true, IsFsfLibre: false},
-				},
-			},
+			apiResponse: []byte(`{"licenses":[{"licenseId":"MIT","isOsiApproved":true,"isFsfLibre":false}]}`),
+			apiError: nil,
 			expectedResult:  layer4.Failed,
 			expectedMessage: "These licenses are not OSI or FSF approved: UnknownLicense",
 		},
@@ -299,15 +281,24 @@ func TestGoodLicense(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			// Mock getLicenseList function
-			mockGetLicenseList := func(data data.Payload, makeApiCall func(string, bool) ([]byte, error)) (LicenseList, string) {
-				if test.mockError != "" {
-					return LicenseList{}, test.mockError
-				}
-				return test.mockLicenses, ""
+			client := data.ClientMock{
+				Response: &http.Response{
+					StatusCode: 200,
+					Body:       io.NopCloser(bytes.NewReader(test.apiResponse)),
+				},
+				Err: test.apiError,
+			}
+			restData := &data.RestData{
+				HttpClient: &client,
 			}
 
-			result, message := goodLicense(test.payloadData, nil, mockGetLicenseList)
+			payload, ok := test.payloadData.(data.Payload)
+			if ok {
+				payload.RestData = restData
+				test.payloadData = payload
+			}
+
+			result, message := goodLicense(test.payloadData, nil)
 			assert.Equal(t, test.expectedResult, result)
 			assert.Equal(t, test.expectedMessage, message)
 		})

@@ -77,19 +77,14 @@ func releasesLicensed(payloadData any, _ map[string]*layer4.Change) (result laye
 	return layer4.Passed, "GitHub releases include the license(s) in the released source code."
 }
 
-func goodLicense(payloadData any, _ map[string]*layer4.Change, mockGetLicenseList ...func(data.Payload, func(string, bool) ([]byte, error)) (LicenseList, string)) (result layer4.Result, message string) {
+func goodLicense(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
 	data, message := reusable_steps.VerifyPayload(payloadData)
 	if message != "" {
 		return layer4.Unknown, message
 	}
 
-	var licenses LicenseList
-	var errString string
-	if len(mockGetLicenseList) > 0 && mockGetLicenseList[0] != nil {
-		licenses, errString = mockGetLicenseList[0](data, nil)
-	} else {
-		licenses, errString = getLicenseList(data, nil)
-	}
+	licenses, errString := getLicenseList(data, nil)
+
 	if errString != "" {
 		return layer4.Unknown, errString
 	}
