@@ -20,7 +20,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Pull the pvtr-github-repo image
         run: docker pull eddieknight/pvtr-github-repo:latest
@@ -46,7 +48,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Pull the pvtr-github-repo image
         run: docker pull eddieknight/pvtr-github-repo:latest
