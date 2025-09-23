@@ -106,3 +106,61 @@ func TestSastToolDefined(t *testing.T) {
 	}
 
 }
+
+func TestHasVulnerabilityDisclosurePolicy(t *testing.T) {
+	tests := []struct {
+		name            string
+		payloadData     any
+		expectedResult  layer4.Result
+		expectedMessage string
+	}{
+		{
+			name:            "Vulnerability disclosure policy present",
+			expectedResult:  layer4.Passed,
+			expectedMessage: "Vulnerability disclosure policy was specified in Security Insights data",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					Insights: si.SecurityInsights{
+						Project: si.Project{
+							Vulnerability: si.VulnReport{
+								SecurityPolicy: "https://example.com/SECURITY.md",
+							},
+						},
+					},
+				},
+				GraphqlRepoData: &data.GraphqlRepoData{},
+			},
+		},
+		{
+			name:            "Vulnerability disclosure policy missing",
+			expectedResult:  layer4.Failed,
+			expectedMessage: "Vulnerability disclosure policy was NOT specified in Security Insights data",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					Insights: si.SecurityInsights{
+						Project: si.Project{
+							Vulnerability: si.VulnReport{
+								SecurityPolicy: "",
+							},
+						},
+					},
+				},
+				GraphqlRepoData: &data.GraphqlRepoData{},
+			},
+		},
+		{
+			name:            "Invalid payload",
+			expectedResult:  layer4.Unknown,
+			expectedMessage: "Malformed assessment: expected payload type data.Payload, got string (invalid_payload)",
+			payloadData:     "invalid_payload",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result, message := hasVulnerabilityDisclosurePolicy(test.payloadData, nil)
+			assert.Equal(t, test.expectedResult, result)
+			assert.Equal(t, test.expectedMessage, message)
+		})
+	}
+}
