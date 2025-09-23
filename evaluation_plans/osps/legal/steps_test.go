@@ -1,10 +1,7 @@
 package legal
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"net/http"
 	"testing"
 
 	"github.com/ossf/gemara/layer4"
@@ -281,20 +278,8 @@ func TestGoodLicense(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			client := data.ClientMock{
-				Response: &http.Response{
-					StatusCode: 200,
-					Body:       io.NopCloser(bytes.NewReader(test.apiResponse)),
-				},
-				Err: test.apiError,
-			}
-			restData := &data.RestData{
-				HttpClient: &client,
-			}
-
-			payload, ok := test.payloadData.(data.Payload)
-			if ok {
-				payload.RestData = restData
+			if payload, ok := test.payloadData.(data.Payload); ok {
+				payload = data.NewPayloadWithHTTPMock(payload, test.apiResponse, 200, test.apiError)
 				test.payloadData = payload
 			}
 
