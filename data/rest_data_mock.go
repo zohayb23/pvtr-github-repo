@@ -29,6 +29,6 @@ func NewPayloadWithHTTPMock(base Payload, body []byte, statusCode int, httpErr e
 	if base.RestData == nil {
 		base.RestData = &RestData{}
 	}
-	base.RestData.HttpClient = mock
+	base.HttpClient = mock
 	return base
 }
