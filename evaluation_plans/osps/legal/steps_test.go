@@ -81,7 +81,6 @@ func TestReleasesLicensed(t *testing.T) {
 	}
 }
 
-
 func TestGetLicenseList(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -117,10 +116,10 @@ func TestGetLicenseList(t *testing.T) {
 			mockError:     nil,
 			expectedError: "Good license data was unexpectedly empty",
 			expectEmpty:   true,
-    },
+		},
 	}
-  
-  for _, test := range tests {
+
+	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			mockMakeApiCall := func(endpoint string, isGithub bool) ([]byte, error) {
 				if test.mockError != nil {
@@ -141,7 +140,7 @@ func TestGetLicenseList(t *testing.T) {
 		})
 	}
 }
-      
+
 func TestSplitSpdxExpression(t *testing.T) {
 	tests := []struct {
 		name     string
