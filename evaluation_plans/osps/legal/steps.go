@@ -84,6 +84,7 @@ func goodLicense(payloadData any, _ map[string]*layer4.Change) (result layer4.Re
 	}
 
 	licenses, errString := getLicenseList(data, nil)
+
 	if errString != "" {
 		return layer4.Unknown, errString
 	}
@@ -116,8 +117,10 @@ func goodLicense(payloadData any, _ map[string]*layer4.Change) (result layer4.Re
 		}
 	}
 	approvedLicenses := strings.Join(spdx_ids, ", ")
-	data.Config.Logger.Trace(fmt.Sprintf("Requested licenses: %s", approvedLicenses))
-	data.Config.Logger.Trace(fmt.Sprintf("Non-approved licenses: %s", badLicenses))
+	if data.Config.Logger != nil {
+		data.Config.Logger.Trace(fmt.Sprintf("Requested licenses: %s", approvedLicenses))
+		data.Config.Logger.Trace(fmt.Sprintf("Non-approved licenses: %s", badLicenses))
+	}
 
 	if len(badLicenses) > 0 {
 		return layer4.Failed, fmt.Sprintf("These licenses are not OSI or FSF approved: %s", strings.Join(badLicenses, ", "))

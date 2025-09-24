@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/ossf/gemara/layer4"
+	"github.com/privateerproj/privateer-sdk/config"
 	"github.com/revanite-io/pvtr-github-repo/data"
 	"github.com/stretchr/testify/assert"
 )
@@ -183,6 +184,108 @@ func TestSplitSpdxExpression(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			result := splitSpdxExpression(test.input)
 			assert.Equal(t, test.expected, result)
+		})
+	}
+}
+
+func TestGoodLicense(t *testing.T) {
+	tests := []struct {
+		name            string
+		payloadData     any
+		apiResponse		 []byte
+		apiError        error
+		expectedResult  layer4.Result
+		expectedMessage string
+	}{
+		{
+			name:            "Invalid payload",
+			payloadData:     "invalid",
+			expectedResult:  layer4.Unknown,
+			expectedMessage: "Malformed assessment: expected payload type data.Payload, got string (invalid)",
+		},
+		{
+			name: "No license identifiers found",
+			payloadData: data.Payload{
+				GraphqlRepoData: &data.GraphqlRepoData{},
+				Config:          &config.Config{},
+			},
+			apiResponse: []byte(`{"licenses":[{"licenseId":"MIT","isOsiApproved":true,"isFsfLibre":false}]}`),
+			apiError: nil,
+			expectedResult:  layer4.Failed,
+			expectedMessage: "License SPDX identifier was not found in Security Insights data or via GitHub API",
+		},
+		{
+			name: "OSI approved license (MIT)",
+			payloadData: data.Payload{
+				GraphqlRepoData: func() *data.GraphqlRepoData {
+					repo := stubGraphqlRepo("")
+					repo.Repository.LicenseInfo.SpdxId = "MIT"
+					return repo
+				}(),
+				Config: &config.Config{},
+			},
+			apiResponse: []byte(`{"licenses":[{"licenseId":"MIT","isOsiApproved":true,"isFsfLibre":false}]}`),
+			apiError: nil,
+			expectedResult:  layer4.NeedsReview,
+			expectedMessage: "All license found are OSI or FSF approved",
+		},
+		{
+			name: "Non-approved license",
+			payloadData: data.Payload{
+				GraphqlRepoData: func() *data.GraphqlRepoData {
+					repo := stubGraphqlRepo("")
+					repo.Repository.LicenseInfo.SpdxId = "BadLicense"
+					return repo
+				}(),
+				Config: &config.Config{},
+			},
+			apiResponse: []byte(`{"licenses":[{"licenseId":"BadLicense","isOsiApproved":false,"isFsfLibre":false}]}`),
+			apiError: nil,
+			expectedResult:  layer4.Failed,
+			expectedMessage: "These licenses are not OSI or FSF approved: BadLicense",
+		},
+		{
+			name: "Multiple licenses with mixed approval",
+			payloadData: data.Payload{
+				GraphqlRepoData: func() *data.GraphqlRepoData {
+					repo := stubGraphqlRepo("")
+					repo.Repository.LicenseInfo.SpdxId = "MIT AND BadLicense"
+					return repo
+				}(),
+				Config: &config.Config{},
+			},
+			apiResponse: []byte(`{"licenses":[{"licenseId":"MIT","isOsiApproved":true,"isFsfLibre":false},{"licenseId":"BadLicense","isOsiApproved":false,"isFsfLibre":false}]}`),
+			apiError: nil,
+			expectedResult:  layer4.Failed,
+			expectedMessage: "These licenses are not OSI or FSF approved: BadLicense",
+		},
+		{
+			name: "Unknown license ID",
+			payloadData: data.Payload{
+				GraphqlRepoData: func() *data.GraphqlRepoData {
+					repo := stubGraphqlRepo("")
+					repo.Repository.LicenseInfo.SpdxId = "UnknownLicense"
+					return repo
+				}(),
+				Config: &config.Config{},
+			},
+			apiResponse: []byte(`{"licenses":[{"licenseId":"MIT","isOsiApproved":true,"isFsfLibre":false}]}`),
+			apiError: nil,
+			expectedResult:  layer4.Failed,
+			expectedMessage: "These licenses are not OSI or FSF approved: UnknownLicense",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if payload, ok := test.payloadData.(data.Payload); ok {
+				payload = data.NewPayloadWithHTTPMock(payload, test.apiResponse, 200, test.apiError)
+				test.payloadData = payload
+			}
+
+			result, message := goodLicense(test.payloadData, nil)
+			assert.Equal(t, test.expectedResult, result)
+			assert.Equal(t, test.expectedMessage, message)
 		})
 	}
 }

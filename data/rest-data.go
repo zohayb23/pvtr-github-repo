@@ -15,6 +15,10 @@ import (
 	"github.com/privateerproj/privateer-sdk/config"
 )
 
+type HttpClient interface {
+    Do(req *http.Request) (*http.Response, error)
+}
+
 type RestData struct {
 	owner               string
 	repo                string
@@ -26,6 +30,7 @@ type RestData struct {
 	Rulesets            []Ruleset
 	contents            RepoContent
 	ghClient            *github.Client
+	HttpClient          HttpClient
 }
 
 type RepoContent struct {
@@ -75,7 +80,9 @@ func (r *RestData) Setup() error {
 }
 
 func (r *RestData) MakeApiCall(endpoint string, isGithub bool) (body []byte, err error) {
-	r.Config.Logger.Trace(fmt.Sprintf("GET %s", endpoint))
+	if r.Config != nil && r.Config.Logger != nil {
+		r.Config.Logger.Trace(fmt.Sprintf("GET %s", endpoint))
+	}
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return nil, err
@@ -83,8 +90,10 @@ func (r *RestData) MakeApiCall(endpoint string, isGithub bool) (body []byte, err
 	if isGithub {
 		request.Header.Set("Authorization", "Bearer "+r.token)
 	}
-	client := &http.Client{}
-	response, err := client.Do(request)
+	if r.HttpClient == nil {
+		r.HttpClient = &http.Client{}
+	}
+	response, err := r.HttpClient.Do(request)
 	if err != nil {
 		err = fmt.Errorf("error making http call: %s", err.Error())
 		return nil, err
