@@ -164,3 +164,127 @@ func TestHasVulnerabilityDisclosurePolicy(t *testing.T) {
 		})
 	}
 }
+
+func TestHasPrivateVulnerabilityReporting(t *testing.T) {
+	tests := []struct {
+		name            string
+		payloadData     any
+		expectedResult  layer4.Result
+		expectedMessage string
+	}{
+		{
+			name:            "Private reporting via vulnerability contact email",
+			expectedResult:  layer4.Passed,
+			expectedMessage: "Private vulnerability reporting available via dedicated contact email in Security Insights data",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					Insights: si.SecurityInsights{
+						Project: si.Project{
+							Vulnerability: si.VulnReport{
+								ReportsAccepted: true,
+								Contact: si.Contact{
+									Email: "security@example.com",
+								},
+							},
+						},
+					},
+				},
+				GraphqlRepoData: &data.GraphqlRepoData{},
+			},
+		},
+		{
+			name:            "Private reporting via security champions",
+			expectedResult:  layer4.Passed,
+			expectedMessage: "Private vulnerability reporting available via security champions contact in Security Insights data",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					Insights: si.SecurityInsights{
+						Project: si.Project{
+							Vulnerability: si.VulnReport{
+								ReportsAccepted: true,
+								Contact: si.Contact{
+									Email: "",
+								},
+							},
+						},
+						Repository: si.Repository{
+							Security: si.SecurityInfo{
+								Champions: []si.Contact{
+									{
+										Name:  "Security Champion",
+										Email: "champion@example.com",
+									},
+								},
+							},
+						},
+					},
+				},
+				GraphqlRepoData: &data.GraphqlRepoData{},
+			},
+		},
+		{
+			name:            "Reports not accepted",
+			expectedResult:  layer4.Failed,
+			expectedMessage: "Project does not accept vulnerability reports according to Security Insights data",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					Insights: si.SecurityInsights{
+						Project: si.Project{
+							Vulnerability: si.VulnReport{
+								ReportsAccepted: false,
+								Contact: si.Contact{
+									Email: "security@example.com",
+								},
+							},
+						},
+					},
+				},
+				GraphqlRepoData: &data.GraphqlRepoData{},
+			},
+		},
+		{
+			name:            "No contact methods available",
+			expectedResult:  layer4.Failed,
+			expectedMessage: "No private vulnerability reporting contact method found in Security Insights data",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					Insights: si.SecurityInsights{
+						Project: si.Project{
+							Vulnerability: si.VulnReport{
+								ReportsAccepted: true,
+								Contact: si.Contact{
+									Email: "",
+								},
+							},
+						},
+						Repository: si.Repository{
+							Security: si.SecurityInfo{
+								Champions: []si.Contact{
+									{
+										Name:  "Champion Without Email",
+										Email: "",
+									},
+								},
+							},
+						},
+					},
+				},
+				GraphqlRepoData: &data.GraphqlRepoData{},
+			},
+		},
+		{
+			name:            "Invalid payload",
+			expectedResult:  layer4.Unknown,
+			expectedMessage: "Malformed assessment: expected payload type data.Payload, got string (invalid_payload)",
+			payloadData:     "invalid_payload",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result, message := hasPrivateVulnerabilityReporting(test.payloadData, nil)
+			assert.Equal(t, test.expectedResult, result)
+			assert.Equal(t, test.expectedMessage, message)
+		})
+	}
+}
