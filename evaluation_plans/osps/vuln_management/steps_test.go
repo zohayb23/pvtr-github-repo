@@ -164,3 +164,101 @@ func TestHasVulnerabilityDisclosurePolicy(t *testing.T) {
 		})
 	}
 }
+
+func stubGraphqlRepoWithSecurityPolicy(isSecurityPolicyEnabled bool) *data.GraphqlRepoData {
+	repo := &data.GraphqlRepoData{}
+	repo.Repository.IsSecurityPolicyEnabled = isSecurityPolicyEnabled
+	return repo
+}
+
+func TestHasPublicVulnerabilityDisclosure(t *testing.T) {
+	tests := []struct {
+		name            string
+		payloadData     any
+		expectedResult  layer4.Result
+		expectedMessage string
+	}{
+		{
+			name:            "Public disclosure via GitHub security policy",
+			expectedResult:  layer4.Passed,
+			expectedMessage: "Public vulnerability disclosure available via GitHub security policy",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					Insights: si.SecurityInsights{
+						Project: si.Project{
+							Vulnerability: si.VulnReport{
+								SecurityPolicy: "",
+							},
+						},
+					},
+				},
+				GraphqlRepoData: stubGraphqlRepoWithSecurityPolicy(true),
+			},
+		},
+		{
+			name:            "Public disclosure via Security Insights policy",
+			expectedResult:  layer4.Passed,
+			expectedMessage: "Public vulnerability disclosure available via security policy in Security Insights data",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					Insights: si.SecurityInsights{
+						Project: si.Project{
+							Vulnerability: si.VulnReport{
+								SecurityPolicy: "https://github.com/example/repo/blob/main/SECURITY.md",
+							},
+						},
+					},
+				},
+				GraphqlRepoData: stubGraphqlRepoWithSecurityPolicy(false),
+			},
+		},
+		{
+			name:            "No public disclosure mechanism",
+			expectedResult:  layer4.Failed,
+			expectedMessage: "No public vulnerability disclosure mechanism found",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					Insights: si.SecurityInsights{
+						Project: si.Project{
+							Vulnerability: si.VulnReport{
+								SecurityPolicy: "",
+							},
+						},
+					},
+				},
+				GraphqlRepoData: stubGraphqlRepoWithSecurityPolicy(false),
+			},
+		},
+		{
+			name:            "Both mechanisms available - GitHub policy takes priority",
+			expectedResult:  layer4.Passed,
+			expectedMessage: "Public vulnerability disclosure available via GitHub security policy",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					Insights: si.SecurityInsights{
+						Project: si.Project{
+							Vulnerability: si.VulnReport{
+								SecurityPolicy: "https://github.com/example/repo/blob/main/SECURITY.md",
+							},
+						},
+					},
+				},
+				GraphqlRepoData: stubGraphqlRepoWithSecurityPolicy(true),
+			},
+		},
+		{
+			name:            "Invalid payload",
+			expectedResult:  layer4.Unknown,
+			expectedMessage: "Malformed assessment: expected payload type data.Payload, got string (invalid_payload)",
+			payloadData:     "invalid_payload",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result, message := hasPublicVulnerabilityDisclosure(test.payloadData, nil)
+			assert.Equal(t, test.expectedResult, result)
+			assert.Equal(t, test.expectedMessage, message)
+		})
+	}
+}

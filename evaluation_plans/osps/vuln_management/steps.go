@@ -60,3 +60,20 @@ func hasVulnerabilityDisclosurePolicy(payloadData any, _ map[string]*layer4.Chan
 
 	return layer4.Passed, "Vulnerability disclosure policy was specified in Security Insights data"
 }
+
+func hasPublicVulnerabilityDisclosure(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if data.GraphqlRepoData.Repository.IsSecurityPolicyEnabled {
+		return layer4.Passed, "Public vulnerability disclosure available via GitHub security policy"
+	}
+
+	if data.Insights.Project.Vulnerability.SecurityPolicy != "" {
+		return layer4.Passed, "Public vulnerability disclosure available via security policy in Security Insights data"
+	}
+
+	return layer4.Failed, "No public vulnerability disclosure mechanism found"
+}
