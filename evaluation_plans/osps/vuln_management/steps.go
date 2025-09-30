@@ -68,7 +68,7 @@ func hasPublicVulnerabilityDisclosure(payloadData any, _ map[string]*layer4.Chan
 		return layer4.Unknown, message
 	}
 
-	advisoryCount := len(data.RestData.SecurityAdvisories)
+	advisoryCount := len(data.SecurityAdvisories)
 	if advisoryCount > 0 {
 		if advisoryCount == 1 {
 			return layer4.Passed, "Found 1 published security advisory"
