@@ -165,12 +165,6 @@ func TestHasVulnerabilityDisclosurePolicy(t *testing.T) {
 	}
 }
 
-func stubGraphqlRepoWithSecurityPolicy(isSecurityPolicyEnabled bool) *data.GraphqlRepoData {
-	repo := &data.GraphqlRepoData{}
-	repo.Repository.IsSecurityPolicyEnabled = isSecurityPolicyEnabled
-	return repo
-}
-
 func TestHasPublicVulnerabilityDisclosure(t *testing.T) {
 	tests := []struct {
 		name            string
@@ -179,71 +173,62 @@ func TestHasPublicVulnerabilityDisclosure(t *testing.T) {
 		expectedMessage string
 	}{
 		{
-			name:            "Public disclosure via GitHub security policy",
+			name:            "One published security advisory",
 			expectedResult:  layer4.Passed,
-			expectedMessage: "Public vulnerability disclosure available via GitHub security policy",
+			expectedMessage: "Found 1 published security advisory",
 			payloadData: data.Payload{
 				RestData: &data.RestData{
-					Insights: si.SecurityInsights{
-						Project: si.Project{
-							Vulnerability: si.VulnReport{
-								SecurityPolicy: "",
-							},
+					SecurityAdvisories: []data.SecurityAdvisory{
+						{
+							GhsaId:      "GHSA-xxxx-xxxx-xxxx",
+							Summary:     "Test advisory",
+							State:       "published",
+							PublishedAt: "2024-01-01T00:00:00Z",
 						},
 					},
 				},
-				GraphqlRepoData: stubGraphqlRepoWithSecurityPolicy(true),
+				GraphqlRepoData: &data.GraphqlRepoData{},
 			},
 		},
 		{
-			name:            "Public disclosure via Security Insights policy",
+			name:            "Multiple published security advisories",
 			expectedResult:  layer4.Passed,
-			expectedMessage: "Public vulnerability disclosure available via security policy in Security Insights data",
+			expectedMessage: "Found 3 published security advisories",
 			payloadData: data.Payload{
 				RestData: &data.RestData{
-					Insights: si.SecurityInsights{
-						Project: si.Project{
-							Vulnerability: si.VulnReport{
-								SecurityPolicy: "https://github.com/example/repo/blob/main/SECURITY.md",
-							},
+					SecurityAdvisories: []data.SecurityAdvisory{
+						{
+							GhsaId:      "GHSA-xxxx-xxxx-xxxx",
+							Summary:     "First advisory",
+							State:       "published",
+							PublishedAt: "2024-01-01T00:00:00Z",
+						},
+						{
+							GhsaId:      "GHSA-yyyy-yyyy-yyyy",
+							Summary:     "Second advisory",
+							State:       "published",
+							PublishedAt: "2024-02-01T00:00:00Z",
+						},
+						{
+							GhsaId:      "GHSA-zzzz-zzzz-zzzz",
+							Summary:     "Third advisory",
+							State:       "published",
+							PublishedAt: "2024-03-01T00:00:00Z",
 						},
 					},
 				},
-				GraphqlRepoData: stubGraphqlRepoWithSecurityPolicy(false),
+				GraphqlRepoData: &data.GraphqlRepoData{},
 			},
 		},
 		{
-			name:            "No public disclosure mechanism",
+			name:            "No published security advisories",
 			expectedResult:  layer4.Failed,
-			expectedMessage: "No public vulnerability disclosure mechanism found",
+			expectedMessage: "No published security advisories found",
 			payloadData: data.Payload{
 				RestData: &data.RestData{
-					Insights: si.SecurityInsights{
-						Project: si.Project{
-							Vulnerability: si.VulnReport{
-								SecurityPolicy: "",
-							},
-						},
-					},
+					SecurityAdvisories: []data.SecurityAdvisory{},
 				},
-				GraphqlRepoData: stubGraphqlRepoWithSecurityPolicy(false),
-			},
-		},
-		{
-			name:            "Both mechanisms available - GitHub policy takes priority",
-			expectedResult:  layer4.Passed,
-			expectedMessage: "Public vulnerability disclosure available via GitHub security policy",
-			payloadData: data.Payload{
-				RestData: &data.RestData{
-					Insights: si.SecurityInsights{
-						Project: si.Project{
-							Vulnerability: si.VulnReport{
-								SecurityPolicy: "https://github.com/example/repo/blob/main/SECURITY.md",
-							},
-						},
-					},
-				},
-				GraphqlRepoData: stubGraphqlRepoWithSecurityPolicy(true),
+				GraphqlRepoData: &data.GraphqlRepoData{},
 			},
 		},
 		{

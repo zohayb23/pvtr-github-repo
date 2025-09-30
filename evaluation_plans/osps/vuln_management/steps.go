@@ -1,6 +1,7 @@
 package vuln_management
 
 import (
+	"fmt"
 	"slices"
 
 	"github.com/ossf/gemara/layer4"
@@ -67,13 +68,13 @@ func hasPublicVulnerabilityDisclosure(payloadData any, _ map[string]*layer4.Chan
 		return layer4.Unknown, message
 	}
 
-	if data.GraphqlRepoData.Repository.IsSecurityPolicyEnabled {
-		return layer4.Passed, "Public vulnerability disclosure available via GitHub security policy"
+	advisoryCount := len(data.RestData.SecurityAdvisories)
+	if advisoryCount > 0 {
+		if advisoryCount == 1 {
+			return layer4.Passed, "Found 1 published security advisory"
+		}
+		return layer4.Passed, fmt.Sprintf("Found %d published security advisories", advisoryCount)
 	}
 
-	if data.Insights.Project.Vulnerability.SecurityPolicy != "" {
-		return layer4.Passed, "Public vulnerability disclosure available via security policy in Security Insights data"
-	}
-
-	return layer4.Failed, "No public vulnerability disclosure mechanism found"
+	return layer4.Failed, "No published security advisories found"
 }
