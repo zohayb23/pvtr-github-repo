@@ -68,12 +68,35 @@ func hasPublicVulnerabilityDisclosure(payloadData any, _ map[string]*layer4.Chan
 	}
 
 	if data.GraphqlRepoData.Repository.IsSecurityPolicyEnabled {
-		return layer4.Passed, "Public vulnerability disclosure available via GitHub security policy"
+		return layer4.Passed, "GitHub Security policy found"
 	}
 
 	if data.Insights.Project.Vulnerability.SecurityPolicy != "" {
-		return layer4.Passed, "Public vulnerability disclosure available via security policy in Security Insights data"
+		return layer4.Passed, "Security policy found in Security Insights"
 	}
 
-	return layer4.Failed, "No public vulnerability disclosure mechanism found"
+	return layer4.Failed, "No security policy found"
+}
+
+func hasPrivateVulnerabilityReporting(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {
+	data, message := reusable_steps.VerifyPayload(payloadData)
+	if message != "" {
+		return layer4.Unknown, message
+	}
+
+	if !data.Insights.Project.Vulnerability.ReportsAccepted {
+		return layer4.Failed, "Project does not accept vulnerability reports according to Security Insights data"
+	}
+
+	if data.Insights.Project.Vulnerability.Contact.Email != "" {
+		return layer4.Passed, "Private vulnerability reporting available via dedicated contact email in Security Insights data"
+	}
+
+	for _, champion := range data.Insights.Repository.Security.Champions {
+		if champion.Email != "" {
+			return layer4.Passed, "Private vulnerability reporting available via security champions contact in Security Insights data"
+		}
+	}
+
+	return layer4.Failed, "No private vulnerability reporting contact method found in Security Insights data"
 }
