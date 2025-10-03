@@ -169,67 +169,57 @@ func TestHasPublicVulnerabilityDisclosure(t *testing.T) {
 	tests := []struct {
 		name            string
 		payloadData     any
+		apiResponse     []byte
+		apiError        error
 		expectedResult  layer4.Result
 		expectedMessage string
 	}{
 		{
-			name:            "One published security advisory",
+			name:            "Security advisory publishing is enabled with advisories",
 			expectedResult:  layer4.Passed,
-			expectedMessage: "Found 1 published security advisory",
+			expectedMessage: "Security advisory publishing is enabled",
 			payloadData: data.Payload{
 				RestData: &data.RestData{
 					SecurityAdvisories: []data.SecurityAdvisory{
 						{
-							GhsaId:      "GHSA-xxxx-xxxx-xxxx",
-							Summary:     "Test advisory",
-							State:       "published",
-							PublishedAt: "2024-01-01T00:00:00Z",
+							GhsaId:   "GHSA-1234-5678-9012",
+							CveId:    "CVE-2024-12345",
+							Summary:  "Test advisory",
+							Severity: "high",
+							State:    "published",
 						},
 					},
 				},
 				GraphqlRepoData: &data.GraphqlRepoData{},
 			},
+			apiResponse: []byte(`[{"ghsa_id":"GHSA-1234-5678-9012","cve_id":"CVE-2024-12345","summary":"Test advisory","severity":"high","state":"published","published_at":"2024-01-01T00:00:00Z"}]`),
+			apiError:    nil,
 		},
 		{
-			name:            "Multiple published security advisories",
+			name:            "Security advisory publishing is enabled with no advisories",
 			expectedResult:  layer4.Passed,
-			expectedMessage: "Found 3 published security advisories",
-			payloadData: data.Payload{
-				RestData: &data.RestData{
-					SecurityAdvisories: []data.SecurityAdvisory{
-						{
-							GhsaId:      "GHSA-xxxx-xxxx-xxxx",
-							Summary:     "First advisory",
-							State:       "published",
-							PublishedAt: "2024-01-01T00:00:00Z",
-						},
-						{
-							GhsaId:      "GHSA-yyyy-yyyy-yyyy",
-							Summary:     "Second advisory",
-							State:       "published",
-							PublishedAt: "2024-02-01T00:00:00Z",
-						},
-						{
-							GhsaId:      "GHSA-zzzz-zzzz-zzzz",
-							Summary:     "Third advisory",
-							State:       "published",
-							PublishedAt: "2024-03-01T00:00:00Z",
-						},
-					},
-				},
-				GraphqlRepoData: &data.GraphqlRepoData{},
-			},
-		},
-		{
-			name:            "No published security advisories",
-			expectedResult:  layer4.Failed,
-			expectedMessage: "No published security advisories found",
+			expectedMessage: "Security advisory publishing is enabled",
 			payloadData: data.Payload{
 				RestData: &data.RestData{
 					SecurityAdvisories: []data.SecurityAdvisory{},
 				},
 				GraphqlRepoData: &data.GraphqlRepoData{},
 			},
+			apiResponse: []byte(`[]`),
+			apiError:    nil,
+		},
+		{
+			name:            "Security advisory publishing is not enabled",
+			expectedResult:  layer4.Failed,
+			expectedMessage: "Security advisory publishing is not enabled",
+			payloadData: data.Payload{
+				RestData: &data.RestData{
+					SecurityAdvisories: nil,
+				},
+				GraphqlRepoData: &data.GraphqlRepoData{},
+			},
+			apiResponse: []byte(`[]`),
+			apiError:    nil,
 		},
 		{
 			name:            "Invalid payload",
@@ -241,6 +231,11 @@ func TestHasPublicVulnerabilityDisclosure(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
+			if payload, ok := test.payloadData.(data.Payload); ok {
+				payload = data.NewPayloadWithHTTPMock(payload, test.apiResponse, 200, test.apiError)
+				test.payloadData = payload
+			}
+
 			result, message := hasPublicVulnerabilityDisclosure(test.payloadData, nil)
 			assert.Equal(t, test.expectedResult, result)
 			assert.Equal(t, test.expectedMessage, message)

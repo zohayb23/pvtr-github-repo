@@ -1,7 +1,6 @@
 package vuln_management
 
 import (
-	"fmt"
 	"slices"
 
 	"github.com/ossf/gemara/layer4"
@@ -68,15 +67,11 @@ func hasPublicVulnerabilityDisclosure(payloadData any, _ map[string]*layer4.Chan
 		return layer4.Unknown, message
 	}
 
-	advisoryCount := len(data.SecurityAdvisories)
-	if advisoryCount > 0 {
-		if advisoryCount == 1 {
-			return layer4.Passed, "Found 1 published security advisory"
-		}
-		return layer4.Passed, fmt.Sprintf("Found %d published security advisories", advisoryCount)
+	if data.SecurityAdvisories != nil {
+		return layer4.Passed, "Security advisory publishing is enabled"
 	}
 
-	return layer4.Failed, "No published security advisories found"
+	return layer4.Failed, "Security advisory publishing is not enabled"
 }
 
 func hasPrivateVulnerabilityReporting(payloadData any, _ map[string]*layer4.Change) (result layer4.Result, message string) {

@@ -19,15 +19,6 @@ type HttpClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-type SecurityAdvisory struct {
-	GhsaId      string `json:"ghsa_id"`
-	CveId       string `json:"cve_id"`
-	Summary     string `json:"summary"`
-	Severity    string `json:"severity"`
-	State       string `json:"state"`
-	PublishedAt string `json:"published_at"`
-}
-
 type RestData struct {
 	owner               string
 	repo                string
@@ -74,6 +65,15 @@ type ReleaseAsset struct {
 type WorkflowPermissions struct {
 	DefaultPermissions    string `json:"default_workflow_permissions"`
 	CanApprovePullRequest bool   `json:"can_approve_pull_request_reviews"`
+}
+
+type SecurityAdvisory struct {
+	GhsaId      string `json:"ghsa_id"`
+	CveId       string `json:"cve_id"`
+	Summary     string `json:"summary"`
+	Severity    string `json:"severity"`
+	State       string `json:"state"`
+	PublishedAt string `json:"published_at"`
 }
 
 var APIBase = "https://api.github.com"
