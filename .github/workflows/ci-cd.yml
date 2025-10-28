@@ -11,12 +11,13 @@ on:
       - develop
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: read
-  packages: write
-  id-token: write
-  attestations: write
+# Prevent concurrent runs on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Explicit no permissions at workflow level (set per-job)
+permissions: {}
 
 env:
   REGISTRY: ghcr.io
@@ -29,6 +30,8 @@ jobs:
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -102,6 +105,8 @@ jobs:
   lint:
     name: Lint Code
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -134,7 +139,7 @@ jobs:
           persist-credentials: false
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -149,7 +154,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
       - name: Run Gosec Security Scanner
-        uses: securego/gosec@master
+        uses: securego/gosec@v2.21.4
         with:
           args: '-no-fail -fmt sarif -out gosec-results.sarif ./...'
 
@@ -163,6 +168,8 @@ jobs:
   build-binaries:
     name: Build Multi-Platform Binaries
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build-and-test, lint]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     strategy:
@@ -199,8 +206,11 @@ jobs:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CGO_ENABLED: 0
+          VERSION: ${{ github.ref_name }}
+          COMMIT_HASH: ${{ github.sha }}
+          OUTPUT_NAME: ${{ matrix.output }}
         run: |
-          go build -ldflags="-s -w -X 'main.Version=${{ github.ref_name }}' -X 'main.GitCommitHash=${{ github.sha }}' -X 'main.BuiltAt=$(date -u +%Y-%m-%dT%H:%M:%SZ)'" -o ${{ matrix.output }}
+          go build -ldflags="-s -w -X 'main.Version=${VERSION}' -X 'main.GitCommitHash=${COMMIT_HASH}' -X 'main.BuiltAt=$(date -u +%Y-%m-%dT%H:%M:%SZ)'" -o "${OUTPUT_NAME}"
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
@@ -213,6 +223,11 @@ jobs:
   docker-build-push:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
     needs: [build-and-test, lint]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     steps:
@@ -254,6 +269,7 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
       - name: Build and push Docker image
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -278,13 +294,20 @@ jobs:
   integration-test:
     name: Integration Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [docker-build-push]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Create test config
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
         run: |
           cat > test-config.yml << EOF
           loglevel: info
@@ -300,8 +323,8 @@ jobs:
                 applicability:
                   - Maturity Level 1
               vars:
-                owner: ${{ github.repository_owner }}
-                repo: ${{ github.event.repository.name }}
+                owner: ${REPO_OWNER}
+                repo: ${REPO_NAME}
                 token: \${{ secrets.GITHUB_TOKEN }}
           EOF
 
@@ -324,6 +347,8 @@ jobs:
   notify:
     name: Notify Status
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build-and-test, lint, security-scan, docker-build-push]
     if: always() && (github.event_name == 'push' && github.ref == 'refs/heads/main')
     steps:
