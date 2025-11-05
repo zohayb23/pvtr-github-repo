@@ -1,0 +1,67 @@
+name: Integration Test
+
+on:
+    workflow_run:
+        workflows: ["Docker Build and Push"]
+        types: [completed]
+        branches: [main]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    packages: read
+
+env:
+    REGISTRY: ghcr.io
+    IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+    integration-test:
+        name: Integration Test
+        runs-on: ubuntu-latest
+        if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
+                  ref: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
+
+            - name: Create test config
+              env:
+                  REPO_OWNER: ${{ github.repository_owner }}
+                  REPO_NAME: ${{ github.event.repository.name }}
+              run: |
+                  cat > test-config.yml << EOF
+                  loglevel: info
+                  write-directory: evaluation_results
+                  write: true
+                  output: yaml
+                  services:
+                    self-test:
+                      plugin: github-repo
+                      policy:
+                        catalogs:
+                          - OSPS_B
+                        applicability:
+                          - Maturity Level 1
+                      vars:
+                        owner: ${REPO_OWNER}
+                        repo: ${REPO_NAME}
+                        token: \${{ secrets.GITHUB_TOKEN }}
+                  EOF
+
+            - name: Run self-assessment using Docker image
+              run: |
+                  docker run --rm \
+                    -v $(pwd)/test-config.yml:/.privateer/config.yml \
+                    -v $(pwd)/evaluation_results:/evaluation_results \
+                    ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+            - name: Upload evaluation results
+              uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: evaluation-results
+                  path: evaluation_results/
+                  retention-days: 30
