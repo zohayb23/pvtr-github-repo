@@ -21,6 +21,32 @@ jobs:
         runs-on: ubuntu-latest
         if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') }}
         steps:
+            - name: Validate workflow_run security
+              if: github.event_name == 'workflow_run'
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      const workflowRun = context.payload.workflow_run;
+                      
+                      // Validate workflow_run is from the same repository (not a fork)
+                      if (!workflowRun || workflowRun.repository.full_name !== context.repo.owner + '/' + context.repo.repo) {
+                        core.setFailed('Security: workflow_run must be from the same repository');
+                        return;
+                      }
+                      
+                      // Validate head SHA format
+                      const headSha = workflowRun.head_sha;
+                      if (!headSha || !/^[a-f0-9]{40}$/i.test(headSha)) {
+                        core.setFailed('Invalid head SHA format');
+                        return;
+                      }
+                      
+                      // Validate branch is allowed
+                      const allowedBranches = ['main'];
+                      if (!allowedBranches.includes(workflowRun.head_branch)) {
+                        core.setFailed(`Security: workflow_run from branch '${workflowRun.head_branch}' is not allowed. Allowed branches: ${allowedBranches.join(', ')}`);
+                        return;
+                      }
             - name: Checkout code
               uses: actions/checkout@v5
               with:
