@@ -89,4 +89,7 @@ require (
 // Uncomment if you're working on a dependency locally
 // replace github.com/privateerproj/privateer-sdk => ../../privateerproj/privateer-sdk
 
+// Testing: Use fork branch with SARIF tool name fix
+replace github.com/privateerproj/privateer-sdk => github.com/zohayb23/privateer-sdk v0.0.0-20250106000000-4f359477c7b7
+
 // replace github.com/ossf/si-tooling/v2 => ../si-tooling/v2
