@@ -17,7 +17,7 @@ func VerifyPayload(payloadData any) (payload data.Payload, message string) {
 }
 
 func NotImplemented(payloadData any) (result layer4.Result, message string) {
-	return layer4.NeedsReview, "Not implemented"
+	return layer4.NotRun, "Not implemented"
 }
 
 func GithubBuiltIn(payloadData any) (result layer4.Result, message string) {

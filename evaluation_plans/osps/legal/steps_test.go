@@ -226,7 +226,7 @@ func TestGoodLicense(t *testing.T) {
 			},
 			apiResponse:     []byte(`{"licenses":[{"licenseId":"MIT","isOsiApproved":true,"isFsfLibre":false}]}`),
 			apiError:        nil,
-			expectedResult:  layer4.NeedsReview,
+			expectedResult:  layer4.Passed,
 			expectedMessage: "All license found are OSI or FSF approved",
 		},
 		{

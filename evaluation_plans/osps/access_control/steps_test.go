@@ -54,7 +54,7 @@ func Test_OrgRequiresMFA(t *testing.T) {
 			payload: data.Payload{
 				RepositoryMetadata: stubRepoMetadata(nil),
 			},
-			wantResult:  layer4.NeedsReview,
+			wantResult:  layer4.NotRun,
 			wantMessage: "Not evaluated. Two-factor authentication evaluation requires a token with org:admin permissions, or manual review",
 		},
 	}
