@@ -43,7 +43,7 @@ func main() {
 	orchestrator := pluginkit.EvaluationOrchestrator{
 		PluginName:    PluginName,
 		PluginVersion: Version,
-		PluginUri:     "github.com/revanite-io/pvtr-github-repo",
+		PluginUri:     "https://github.com/revanite-io/pvtr-github-repo",
 	}
 	orchestrator.AddLoader(data.Loader)
 
