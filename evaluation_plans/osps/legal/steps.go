@@ -125,5 +125,5 @@ func GoodLicense(payloadData any) (result layer4.Result, message string) {
 	if len(badLicenses) > 0 {
 		return layer4.Failed, fmt.Sprintf("These licenses are not OSI or FSF approved: %s", strings.Join(badLicenses, ", "))
 	}
-	return layer4.NeedsReview, "All license found are OSI or FSF approved"
+	return layer4.Passed, "All license found are OSI or FSF approved"
 }
